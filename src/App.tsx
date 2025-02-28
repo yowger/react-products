@@ -20,7 +20,7 @@ function AppLayout(props: AppLayoutProps) {
 
     return (
         <div className="p-4">
-            <div className="mx-auto max-w-7xl">{children}</div>
+            <div className="flex flex-col mx-auto max-w-7xl">{children}</div>
         </div>
     )
 }
