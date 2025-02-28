@@ -1,11 +1,26 @@
-import { Button } from "@/components/ui/button"
+import ProductPage from "@/features/products/pages/ProductPage"
+import React from "react"
 
 export default function App() {
     return (
         <div>
-            <div className="flex flex-col items-center justify-center min-h-svh">
-                <Button>Click me</Button>
-            </div>
+            <AppLayout>
+                <ProductPage />
+            </AppLayout>
+        </div>
+    )
+}
+
+interface AppLayoutProps {
+    children: React.ReactNode
+}
+
+function AppLayout(props: AppLayoutProps) {
+    const { children } = props
+
+    return (
+        <div className="p-4">
+            <div className="mx-auto max-w-7xl">{children}</div>
         </div>
     )
 }
