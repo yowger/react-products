@@ -3,6 +3,7 @@ import { products } from "@/features/products/data/products"
 import { Separator } from "@/components/ui/separator"
 
 export default function ProductPage() {
+
     return (
         <div>
             <main className="flex flex-col rounded-md">
