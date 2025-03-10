@@ -1,15 +1,19 @@
+import { useGetProducts } from "@/features/products/api/useGetProducts"
 import ProductCard from "@/features/products/components/ProductCart"
 
-import type { Product } from "@/features/products/types/products"
+export default function ProductList() {
+    const {
+        data: productData,
+        isLoading: isProductLoading,
+        isError: isProductError,
+    } = useGetProducts()
 
-interface ProductListProps {
-    products: Product[]
-}
+    if (isProductLoading) return <div>Loading...</div>
+    if (isProductError) return <div>Ops something went wrong!</div>
 
-export default function ProductList({ products }: ProductListProps) {
     return (
         <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 sm:gap-x-8 md:gap-x-10 lg:gap-x-12 gap-y-10 sm:gap-y-12 md:gap-y-14 lg:gap-y-16">
-            {products.map((product) => (
+            {productData?.data.map((product) => (
                 <ProductCard key={product.id} product={product} />
             ))}
         </div>

@@ -6,7 +6,3 @@ export interface Category {
 }
 
 export type CategoriesResponse = Category[]
-
-export interface ApiError {
-    error: string
-}

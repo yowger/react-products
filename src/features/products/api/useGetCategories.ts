@@ -4,10 +4,8 @@ import publicAxios from "@/api/axios/publicAxios"
 import { CATEGORIES_QUERY_KEY } from "@/features/products/api/queryKeys"
 import { time } from "@/lib/utils/time"
 
-import type {
-    ApiError,
-    CategoriesResponse,
-} from "@/features/products/types/categories"
+import type { CategoriesResponse } from "@/features/products/types/categories"
+import type { ApiError } from "@/types/http"
 
 export function getCategories(): Promise<CategoriesResponse> {
     return publicAxios.get("/categories")

@@ -9,10 +9,29 @@ interface ProductProps {
 export default function ProductCard(props: ProductProps) {
     const { product } = props
 
+    const locations = [
+        "New York, USA",
+        "Tokyo, Japan",
+        "Paris, France",
+        "Sydney, Australia",
+        "Berlin, Germany",
+    ]
+
+    const placeholderImage = `https://picsum.photos/200/300?random=${
+        Math.floor(Math.random() * 100) + 1
+    }"`
+
+    const placeHolderRating = Math.floor(Math.random() * 5) + 1
+
+    const placeHolderLocation =
+        locations[Math.floor(Math.random() * locations.length)]
+
     return (
         <div className="flex flex-col rounded-md cursor-pointer p-4 hover:shadow-lg transition-shadow duration-500">
             <img
-                src={product.image}
+                // src={product.image}
+                // placeholder
+                src={placeholderImage}
                 alt={product.name}
                 className="w-full h-64 object-cover rounded-xs"
                 loading="lazy"
@@ -23,21 +42,24 @@ export default function ProductCard(props: ProductProps) {
                 </h3>
 
                 <div className="flex items-center space-x-1 text-yellow-500">
-                    <RenderStars rating={product.rating} />
+                    {/* <RenderStars rating={product.rating} /> */}
+                    <RenderStars rating={placeHolderRating} />
 
                     <span className="text-gray-600 text-sm ml-1">
-                        {product.rating}
+                        {/* {product.rating} */}
+                        {placeHolderRating}
                     </span>
                 </div>
 
                 <p className="font-semibold text-gray-800">
-                    ${product.price.toFixed(2)}
+                    ${Number(product.price).toFixed(2)}
                 </p>
 
                 <div className="grow" />
 
                 <p className="text-gray-600 text-xs line-clamp-1">
-                    {product.location}
+                    {/* {product.location} */}
+                    {placeHolderLocation}
                 </p>
             </div>
         </div>
