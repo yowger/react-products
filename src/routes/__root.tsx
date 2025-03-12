@@ -51,18 +51,7 @@ function Navigation() {
                         activeOptions={{ exact: true }}
                         className="block py-2 px-3"
                     >
-                        Products
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to="/products/create"
-                        activeProps={{
-                            className: "font-semibold",
-                        }}
-                        className="block py-2 px-3"
-                    >
-                        Create
+                        Home
                     </Link>
                 </li>
                 <li>
