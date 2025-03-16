@@ -46,12 +46,12 @@ function ErrorComponent(_props: ErrorComponentProps) {
     )
 }
 
-function LoadingComponent() {
-    const COMPONENT_LENGTH = 4
+const SKELETONS = Array.from({ length: 4 })
 
+function LoadingComponent() {
     return (
         <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 sm:gap-x-8 md:gap-x-10 lg:gap-x-12 gap-y-10 sm:gap-y-12 md:gap-y-14 lg:gap-y-16">
-            {Array.from({ length: COMPONENT_LENGTH }).map((_, i) => (
+            {SKELETONS.map((_, i) => (
                 <div key={i}>
                     <Skeleton className="w-full h-64 rounded-xs" />
                     <div className="flex flex-col gap-1.5 mt-2">
