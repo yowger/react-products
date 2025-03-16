@@ -26,7 +26,9 @@ export interface UpdateProductPayload {
     categoryId?: string
 }
 
-export interface ProductResponse {
+export type ProductResponse = Product
+
+export interface ProductsResponse {
     data: Product[]
     pagination: pagination
 }

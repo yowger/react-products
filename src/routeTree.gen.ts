@@ -8,28 +8,28 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ProfileImport } from './routes/profile'
+import { Route as ProductsRouteImport } from './routes/products/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as ProductsCreateImport } from './routes/products/create'
-import { Route as ProductsProductIdIndexImport } from './routes/products/$productId/index'
-
-// Create Virtual Routes
-
-const ProductsProductIdEditLazyImport = createFileRoute(
-  '/products/$productId/edit',
-)()
+import { Route as ProductsProductSlugIndexImport } from './routes/products/$productSlug/index'
+import { Route as ProductsProductSlugEditImport } from './routes/products/$productSlug/edit'
 
 // Create/Update Routes
 
 const ProfileRoute = ProfileImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProductsRouteRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -40,30 +40,28 @@ const IndexRoute = IndexImport.update({
 } as any)
 
 const ProductsIndexRoute = ProductsIndexImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProductsRouteRoute,
 } as any)
 
 const ProductsCreateRoute = ProductsCreateImport.update({
-  id: '/products/create',
-  path: '/products/create',
-  getParentRoute: () => rootRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => ProductsRouteRoute,
 } as any)
 
-const ProductsProductIdIndexRoute = ProductsProductIdIndexImport.update({
-  id: '/products/$productId/',
-  path: '/products/$productId/',
-  getParentRoute: () => rootRoute,
+const ProductsProductSlugIndexRoute = ProductsProductSlugIndexImport.update({
+  id: '/$productSlug/',
+  path: '/$productSlug/',
+  getParentRoute: () => ProductsRouteRoute,
 } as any)
 
-const ProductsProductIdEditLazyRoute = ProductsProductIdEditLazyImport.update({
-  id: '/products/$productId/edit',
-  path: '/products/$productId/edit',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/products/$productId/edit.lazy').then((d) => d.Route),
-)
+const ProductsProductSlugEditRoute = ProductsProductSlugEditImport.update({
+  id: '/$productSlug/edit',
+  path: '/$productSlug/edit',
+  getParentRoute: () => ProductsRouteRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -76,6 +74,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -85,44 +90,63 @@ declare module '@tanstack/react-router' {
     }
     '/products/create': {
       id: '/products/create'
-      path: '/products/create'
+      path: '/create'
       fullPath: '/products/create'
       preLoaderRoute: typeof ProductsCreateImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof ProductsRouteImport
     }
     '/products/': {
       id: '/products/'
-      path: '/products'
-      fullPath: '/products'
+      path: '/'
+      fullPath: '/products/'
       preLoaderRoute: typeof ProductsIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof ProductsRouteImport
     }
-    '/products/$productId/edit': {
-      id: '/products/$productId/edit'
-      path: '/products/$productId/edit'
-      fullPath: '/products/$productId/edit'
-      preLoaderRoute: typeof ProductsProductIdEditLazyImport
-      parentRoute: typeof rootRoute
+    '/products/$productSlug/edit': {
+      id: '/products/$productSlug/edit'
+      path: '/$productSlug/edit'
+      fullPath: '/products/$productSlug/edit'
+      preLoaderRoute: typeof ProductsProductSlugEditImport
+      parentRoute: typeof ProductsRouteImport
     }
-    '/products/$productId/': {
-      id: '/products/$productId/'
-      path: '/products/$productId'
-      fullPath: '/products/$productId'
-      preLoaderRoute: typeof ProductsProductIdIndexImport
-      parentRoute: typeof rootRoute
+    '/products/$productSlug/': {
+      id: '/products/$productSlug/'
+      path: '/$productSlug'
+      fullPath: '/products/$productSlug'
+      preLoaderRoute: typeof ProductsProductSlugIndexImport
+      parentRoute: typeof ProductsRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface ProductsRouteRouteChildren {
+  ProductsCreateRoute: typeof ProductsCreateRoute
+  ProductsIndexRoute: typeof ProductsIndexRoute
+  ProductsProductSlugEditRoute: typeof ProductsProductSlugEditRoute
+  ProductsProductSlugIndexRoute: typeof ProductsProductSlugIndexRoute
+}
+
+const ProductsRouteRouteChildren: ProductsRouteRouteChildren = {
+  ProductsCreateRoute: ProductsCreateRoute,
+  ProductsIndexRoute: ProductsIndexRoute,
+  ProductsProductSlugEditRoute: ProductsProductSlugEditRoute,
+  ProductsProductSlugIndexRoute: ProductsProductSlugIndexRoute,
+}
+
+const ProductsRouteRouteWithChildren = ProductsRouteRoute._addFileChildren(
+  ProductsRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/products': typeof ProductsRouteRouteWithChildren
   '/profile': typeof ProfileRoute
   '/products/create': typeof ProductsCreateRoute
-  '/products': typeof ProductsIndexRoute
-  '/products/$productId/edit': typeof ProductsProductIdEditLazyRoute
-  '/products/$productId': typeof ProductsProductIdIndexRoute
+  '/products/': typeof ProductsIndexRoute
+  '/products/$productSlug/edit': typeof ProductsProductSlugEditRoute
+  '/products/$productSlug': typeof ProductsProductSlugIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -130,64 +154,61 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/products/create': typeof ProductsCreateRoute
   '/products': typeof ProductsIndexRoute
-  '/products/$productId/edit': typeof ProductsProductIdEditLazyRoute
-  '/products/$productId': typeof ProductsProductIdIndexRoute
+  '/products/$productSlug/edit': typeof ProductsProductSlugEditRoute
+  '/products/$productSlug': typeof ProductsProductSlugIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/products': typeof ProductsRouteRouteWithChildren
   '/profile': typeof ProfileRoute
   '/products/create': typeof ProductsCreateRoute
   '/products/': typeof ProductsIndexRoute
-  '/products/$productId/edit': typeof ProductsProductIdEditLazyRoute
-  '/products/$productId/': typeof ProductsProductIdIndexRoute
+  '/products/$productSlug/edit': typeof ProductsProductSlugEditRoute
+  '/products/$productSlug/': typeof ProductsProductSlugIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/products'
     | '/profile'
     | '/products/create'
-    | '/products'
-    | '/products/$productId/edit'
-    | '/products/$productId'
+    | '/products/'
+    | '/products/$productSlug/edit'
+    | '/products/$productSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/profile'
     | '/products/create'
     | '/products'
-    | '/products/$productId/edit'
-    | '/products/$productId'
+    | '/products/$productSlug/edit'
+    | '/products/$productSlug'
   id:
     | '__root__'
     | '/'
+    | '/products'
     | '/profile'
     | '/products/create'
     | '/products/'
-    | '/products/$productId/edit'
-    | '/products/$productId/'
+    | '/products/$productSlug/edit'
+    | '/products/$productSlug/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProductsRouteRoute: typeof ProductsRouteRouteWithChildren
   ProfileRoute: typeof ProfileRoute
-  ProductsCreateRoute: typeof ProductsCreateRoute
-  ProductsIndexRoute: typeof ProductsIndexRoute
-  ProductsProductIdEditLazyRoute: typeof ProductsProductIdEditLazyRoute
-  ProductsProductIdIndexRoute: typeof ProductsProductIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProductsRouteRoute: ProductsRouteRouteWithChildren,
   ProfileRoute: ProfileRoute,
-  ProductsCreateRoute: ProductsCreateRoute,
-  ProductsIndexRoute: ProductsIndexRoute,
-  ProductsProductIdEditLazyRoute: ProductsProductIdEditLazyRoute,
-  ProductsProductIdIndexRoute: ProductsProductIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -201,30 +222,40 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/profile",
-        "/products/create",
-        "/products/",
-        "/products/$productId/edit",
-        "/products/$productId/"
+        "/products",
+        "/profile"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/products": {
+      "filePath": "products/route.tsx",
+      "children": [
+        "/products/create",
+        "/products/",
+        "/products/$productSlug/edit",
+        "/products/$productSlug/"
+      ]
+    },
     "/profile": {
       "filePath": "profile.tsx"
     },
     "/products/create": {
-      "filePath": "products/create.tsx"
+      "filePath": "products/create.tsx",
+      "parent": "/products"
     },
     "/products/": {
-      "filePath": "products/index.tsx"
+      "filePath": "products/index.tsx",
+      "parent": "/products"
     },
-    "/products/$productId/edit": {
-      "filePath": "products/$productId/edit.lazy.tsx"
+    "/products/$productSlug/edit": {
+      "filePath": "products/$productSlug/edit.tsx",
+      "parent": "/products"
     },
-    "/products/$productId/": {
-      "filePath": "products/$productId/index.tsx"
+    "/products/$productSlug/": {
+      "filePath": "products/$productSlug/index.tsx",
+      "parent": "/products"
     }
   }
 }

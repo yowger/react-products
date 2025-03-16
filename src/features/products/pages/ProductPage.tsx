@@ -1,14 +1,28 @@
-import FilterProduct from "@/features/products/components/FilterProduct"
-import ProductList from "@/features/products/components/ProductList"
-import { Separator } from "@/components/ui/separator"
+import { useSuspenseQuery } from "@tanstack/react-query"
+
+import { productQueryOptions } from "@/features/products/api/queries/productQueryOptions"
+import { Route } from "@/routes/products/$productSlug"
 
 export default function ProductPage() {
+    const productSlug = Route.useParams().productSlug
+    const { data: productData } = useSuspenseQuery(
+        productQueryOptions(productSlug)
+    )
+
     return (
-        <main className="flex flex-col rounded-md">
-            <h2 className="text-2xl font-semibold tracking-tight">Products</h2>
-            <Separator className="my-4" />
-            <FilterProduct />
-            <ProductList />
-        </main>
+        <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
+            <h1 className="text-2xl font-bold mb-4">{productData.name}</h1>
+            <p className="text-gray-600">{productData.description}</p>
+
+            <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+                <p className="text-lg font-semibold">
+                    Price: ${productData.price}
+                </p>
+                <p className="text-sm text-gray-500">
+                    Added on:{" "}
+                    {new Date(productData.createdAt).toLocaleDateString()}
+                </p>
+            </div>
+        </div>
     )
 }

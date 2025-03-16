@@ -1,49 +1,18 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router"
-import { useQueryErrorResetBoundary } from "@tanstack/react-query"
-import { useEffect } from "react"
+import { createFileRoute } from "@tanstack/react-router"
 
-import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { productsQueryOptions } from "@/features/products/api/queries/productsQueryOptions"
-import { ProductPage } from "@/features/products"
+import { ProductsPage } from "@/features/products"
 
 export const Route = createFileRoute("/products/")({
     loader: ({ context: { queryClient } }) =>
         queryClient.ensureQueryData(productsQueryOptions()),
     component: RouteComponent,
     pendingComponent: LoadingComponent,
-    errorComponent: ErrorComponent,
 })
 
 function RouteComponent() {
-    return <ProductPage />
-}
-
-interface ErrorComponentProps {
-    error: Error
-    reset: () => void
-}
-
-function ErrorComponent(_props: ErrorComponentProps) {
-    const router = useRouter()
-    const queryErrorResetBoundary = useQueryErrorResetBoundary()
-
-    useEffect(() => {
-        queryErrorResetBoundary.reset()
-    }, [queryErrorResetBoundary])
-
-    return (
-        <div>
-            <p>error retrieving products.</p>
-            <Button
-                onClick={() => {
-                    router.invalidate()
-                }}
-            >
-                retry
-            </Button>
-        </div>
-    )
+    return <ProductsPage />
 }
 
 const SKELETONS = Array.from({ length: 4 })

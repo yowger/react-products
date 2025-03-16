@@ -5,24 +5,47 @@ import {
     GetProductsParams,
     UpdateProductPayload,
     ProductResponse,
+    ProductsResponse,
 } from "@/features/products/api/types/products"
 
 const PRODUCTS_API = {
     GET_PRODUCTS: "/products",
-    GET_PRODUCT: (id: string) => `/products/${id}`,
+    GET_PRODUCT: (slug: string) => `/products/${slug}`,
     CREATE_PRODUCT: "/products",
     UPDATE_PRODUCT: (id: string) => `/products/${id}`,
     DELETE_PRODUCT: (id: string) => `/products/${id}`,
 }
 
-export function getProducts(
+export class ProductNotFoundError extends Error {}
+
+export async function getProducts(
     params?: GetProductsParams
-): Promise<ProductResponse> {
-    return publicAxios.get(PRODUCTS_API.GET_PRODUCTS, { params })
+): Promise<ProductsResponse> {
+    const products = await publicAxios
+        .get(PRODUCTS_API.GET_PRODUCTS, {
+            params,
+        })
+        .then((res) => res.data)
+        .catch((err) => {
+            throw err
+        })
+
+    return products
 }
 
-export function getProduct(id: string): Promise<ProductResponse> {
-    return publicAxios.get(PRODUCTS_API.GET_PRODUCT(id))
+export async function getProduct(slug: string): Promise<ProductResponse> {
+    const product = await publicAxios
+        .get(PRODUCTS_API.GET_PRODUCT(slug))
+        .then((res) => res.data)
+        .catch((err) => {
+            if (err.status === 404) {
+                throw new ProductNotFoundError(`Product not found.`)
+            }
+
+            throw err
+        })
+
+    return product
 }
 
 // TODO: Add auth below

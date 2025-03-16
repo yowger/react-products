@@ -7,6 +7,6 @@ import type { GetProductsParams } from "@/features/products/api/types/products"
 
 export const productsQueryOptions = (params?: GetProductsParams) =>
     queryOptions({
-        queryKey: [...PRODUCTS_QUERY_KEY, params],
+        queryKey: [...PRODUCTS_QUERY_KEY, { params }],
         queryFn: () => getProducts(params),
     })

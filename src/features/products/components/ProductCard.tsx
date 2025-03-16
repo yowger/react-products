@@ -30,9 +30,9 @@ export default function ProductCard(props: ProductProps) {
 
     return (
         <Link
-            to="/products/$productId"
+            to="/products/$productSlug"
             params={{
-                productId: product.slug,
+                productSlug: product.slug,
             }}
             className="block"
         >
