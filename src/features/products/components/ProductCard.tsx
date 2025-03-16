@@ -32,7 +32,7 @@ export default function ProductCard(props: ProductProps) {
         <Link
             to="/products/$productId"
             params={{
-                productId: product.id,
+                productId: product.slug,
             }}
             className="block"
         >
