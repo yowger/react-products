@@ -1,17 +1,23 @@
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import {
     createRootRouteWithContext,
+    ErrorComponentProps,
     Link,
     Outlet,
+    useRouter,
 } from "@tanstack/react-router"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { QueryClient } from "@tanstack/react-query"
+import { QueryClient, useQueryErrorResetBoundary } from "@tanstack/react-query"
+import { useEffect } from "react"
+
+import { Button } from "@/components/ui/button"
 
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
 }>()({
     component: Root,
     notFoundComponent: NotFound,
+    errorComponent: ErrorComponent,
 })
 
 function Root() {
@@ -38,6 +44,28 @@ function NotFound() {
     )
 }
 
+function ErrorComponent(_props: ErrorComponentProps) {
+    const router = useRouter()
+    const queryErrorResetBoundary = useQueryErrorResetBoundary()
+
+    useEffect(() => {
+        queryErrorResetBoundary.reset()
+    }, [queryErrorResetBoundary])
+
+    return (
+        <div>
+            <p>Something went wrong.</p>
+            <Button
+                onClick={() => {
+                    router.invalidate()
+                }}
+            >
+                Retry
+            </Button>
+        </div>
+    )
+}
+
 function Navigation() {
     return (
         <div className="flex items-center justify-center">
@@ -48,7 +76,6 @@ function Navigation() {
                         activeProps={{
                             className: "font-semibold",
                         }}
-                        activeOptions={{ exact: true }}
                         className="block py-2 px-3"
                     >
                         Home

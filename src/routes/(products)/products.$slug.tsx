@@ -10,4 +10,7 @@ export const Route = createFileRoute("/(products)/products/$slug")({
     pendingComponent: () => {
         return <div>Loading product...</div>
     },
+    notFoundComponent: () => {
+        return <div>{`Product not found :(`}</div>
+    },
 })

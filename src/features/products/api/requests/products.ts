@@ -1,4 +1,5 @@
 import publicAxios from "@/api/axios/publicAxios"
+import { notFound } from "@tanstack/react-router"
 
 import type {
     CreateProductPayload,
@@ -15,8 +16,6 @@ const PRODUCTS_API = {
     UPDATE_PRODUCT: (id: string) => `/products/${id}`,
     DELETE_PRODUCT: (id: string) => `/products/${id}`,
 }
-
-export class ProductNotFoundError extends Error {}
 
 export async function getProducts(
     params?: GetProductsParams
@@ -39,7 +38,7 @@ export async function getProduct(slug: string): Promise<ProductResponse> {
         .then((res) => res.data)
         .catch((err) => {
             if (err.status === 404) {
-                throw new ProductNotFoundError(`Product not found`)
+                throw notFound()
             }
 
             throw err
