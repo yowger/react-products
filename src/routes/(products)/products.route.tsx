@@ -10,7 +10,7 @@ import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ProductNotFoundError } from "@/features/products/api/requests/products"
 
-export const Route = createFileRoute("/products")({
+export const Route = createFileRoute("/(products)/products")({
     component: RouteComponent,
     errorComponent: ErrorComponent,
 })

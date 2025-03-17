@@ -1,6 +1,6 @@
 import publicAxios from "@/api/axios/publicAxios"
 
-import {
+import type {
     CreateProductPayload,
     GetProductsParams,
     UpdateProductPayload,
@@ -39,7 +39,7 @@ export async function getProduct(slug: string): Promise<ProductResponse> {
         .then((res) => res.data)
         .catch((err) => {
             if (err.status === 404) {
-                throw new ProductNotFoundError(`Product not found.`)
+                throw new ProductNotFoundError(`Product not found`)
             }
 
             throw err

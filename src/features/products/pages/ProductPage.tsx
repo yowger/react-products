@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 
 import { productQueryOptions } from "@/features/products/api/queries/productQueryOptions"
-import { Route } from "@/routes/products/$productSlug"
+import { Route } from "@/routes/(products)/products.$slug"
 
 export default function ProductPage() {
-    const productSlug = Route.useParams().productSlug
+    const productSlug = Route.useParams().slug
     const { data: productData } = useSuspenseQuery(
         productQueryOptions(productSlug)
     )
