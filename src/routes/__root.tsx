@@ -1,3 +1,4 @@
+import { User } from "@auth0/auth0-react"
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import {
     createRootRouteWithContext,
@@ -10,9 +11,12 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { QueryClient, useQueryErrorResetBoundary } from "@tanstack/react-query"
 import { useEffect } from "react"
 
+import Navigation from "@/components/Navigation"
 import { Button } from "@/components/ui/button"
 
 export const Route = createRootRouteWithContext<{
+    user: User
+    isAuthenticated: boolean
     queryClient: QueryClient
 }>()({
     component: Root,
@@ -24,10 +28,8 @@ function Root() {
     return (
         <>
             <Navigation />
-            <div className="p-4">
-                <div className="flex flex-col mx-auto max-w-7xl">
-                    <Outlet />
-                </div>
+            <div className="p-4 flex flex-col mx-auto max-w-7xl">
+                <Outlet />
             </div>
             <ReactQueryDevtools buttonPosition="top-right" />
             <TanStackRouterDevtools position="bottom-right" />
@@ -62,37 +64,6 @@ function ErrorComponent(_props: ErrorComponentProps) {
             >
                 Retry
             </Button>
-        </div>
-    )
-}
-
-function Navigation() {
-    return (
-        <div className="flex items-center justify-center">
-            <ul className="flex p-4 font-medium">
-                <li>
-                    <Link
-                        to="/products"
-                        activeProps={{
-                            className: "font-semibold",
-                        }}
-                        className="block py-2 px-3"
-                    >
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to="/profile"
-                        activeProps={{
-                            className: "font-semibold",
-                        }}
-                        className="block py-2 px-3"
-                    >
-                        Profile
-                    </Link>
-                </li>
-            </ul>
         </div>
     )
 }

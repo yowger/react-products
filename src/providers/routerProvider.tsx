@@ -1,3 +1,4 @@
+import { useAuth0, User } from "@auth0/auth0-react"
 import {
     RouterProvider as RouterProviderLib,
     createBrowserHistory,
@@ -10,6 +11,8 @@ import { queryClient } from "@/providers/queryClientProvider"
 const router = createRouter({
     routeTree,
     context: {
+        user: undefined!,
+        isAuthenticated: false,
         queryClient,
     },
     history: createBrowserHistory(),
@@ -25,5 +28,16 @@ declare module "@tanstack/react-router" {
 }
 
 export default function RouterProvider() {
-    return <RouterProviderLib router={router} />
+    const { user, isAuthenticated, isLoading } = useAuth0()
+
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
+
+    return (
+        <RouterProviderLib
+            router={router}
+            context={{ user, isAuthenticated, queryClient }}
+        />
+    )
 }
