@@ -13,6 +13,7 @@ const router = createRouter({
     context: {
         user: undefined!,
         isAuthenticated: false,
+        logout: undefined!,
         queryClient,
     },
     history: createBrowserHistory(),
@@ -28,7 +29,7 @@ declare module "@tanstack/react-router" {
 }
 
 export default function RouterProvider() {
-    const { user, isAuthenticated, isLoading } = useAuth0()
+    const { user, isAuthenticated, isLoading, logout } = useAuth0()
 
     if (isLoading) {
         return <div>Loading...</div>
@@ -37,7 +38,12 @@ export default function RouterProvider() {
     return (
         <RouterProviderLib
             router={router}
-            context={{ user, isAuthenticated, queryClient }}
+            context={{
+                user,
+                isAuthenticated,
+                logout,
+                queryClient,
+            }}
         />
     )
 }

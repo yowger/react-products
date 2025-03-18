@@ -1,4 +1,4 @@
-import { User } from "@auth0/auth0-react"
+import { LogoutOptions, User } from "@auth0/auth0-react"
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import {
     createRootRouteWithContext,
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 export const Route = createRootRouteWithContext<{
     user: User
     isAuthenticated: boolean
+    logout: (options?: LogoutOptions) => Promise<void>
     queryClient: QueryClient
 }>()({
     component: Root,
@@ -31,7 +32,7 @@ function Root() {
             <div className="p-4 flex flex-col mx-auto max-w-7xl">
                 <Outlet />
             </div>
-            <ReactQueryDevtools buttonPosition="top-right" />
+            <ReactQueryDevtools buttonPosition="bottom-left" />
             <TanStackRouterDevtools position="bottom-right" />
         </>
     )

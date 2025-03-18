@@ -1,49 +1,80 @@
 import { Link, useRouteContext } from "@tanstack/react-router"
+import { User } from "lucide-react"
+
+import LogInButton from "@/components/auth/logInButton"
+import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Navigation() {
-    const isAuthenticated = useRouteContext({
+    const context = useRouteContext({
         from: "__root__",
-        select: (context) => context.isAuthenticated,
     })
 
     return (
-        <div className="flex items-center justify-center">
-            <ul className="flex p-4 font-medium">
-                <li>
-                    <Link
-                        to="/products"
-                        activeProps={{
-                            className: "font-semibold",
-                        }}
-                        className="block py-2 px-3"
-                    >
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    {isAuthenticated ? (
+        <header>
+            <nav className="px-4 flex items-center justify-between flex-wrap">
+                <div>
+                    <span className="font-bold">LOGO</span>
+                </div>
+
+                <ul className="flex p-4 font-medium">
+                    <li>
                         <Link
-                            to="/profile"
+                            to="/products"
                             activeProps={{
                                 className: "font-semibold",
                             }}
                             className="block py-2 px-3"
                         >
-                            Profile
+                            Home
                         </Link>
-                    ) : (
-                        <Link
-                            to="/login"
-                            activeProps={{
-                                className: "font-semibold",
-                            }}
-                            className="block py-2 px-3"
-                        >
-                            Login
-                        </Link>
-                    )}
-                </li>
-            </ul>
-        </div>
+                    </li>
+                </ul>
+                {context.isAuthenticated ? (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline">
+                                <User />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    to="/profile"
+                                    activeProps={{
+                                        className: "font-semibold",
+                                    }}
+                                >
+                                    Profile
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    context.logout({
+                                        logoutParams: {
+                                            returnTo: window.location.origin,
+                                        },
+                                    })
+                                }
+                                className="cursor-pointer"
+                            >
+                                Logout
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ) : (
+                    <LogInButton />
+                )}
+            </nav>
+        </header>
     )
 }
