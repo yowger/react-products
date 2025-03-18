@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { productsQueryOptions } from "@/features/products/api/queries/productsQueryOptions"
 import { ProductsPage } from "@/features/products"
 
-export const Route = createFileRoute("/(products)/products/")({
+export const Route = createFileRoute("/products/")({
     loader: ({ context: { queryClient } }) =>
         queryClient.ensureQueryData(productsQueryOptions()),
     component: ProductsPage,

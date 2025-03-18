@@ -13,7 +13,6 @@ const router = createRouter({
     context: {
         user: undefined!,
         isAuthenticated: false,
-        logout: undefined!,
         queryClient,
     },
     history: createBrowserHistory(),
@@ -41,7 +40,6 @@ export default function RouterProvider() {
             context={{
                 user,
                 isAuthenticated,
-                logout,
                 queryClient,
             }}
         />

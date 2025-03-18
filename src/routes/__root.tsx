@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button"
 export const Route = createRootRouteWithContext<{
     user: User
     isAuthenticated: boolean
-    logout: (options?: LogoutOptions) => Promise<void>
     queryClient: QueryClient
 }>()({
     component: Root,

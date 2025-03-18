@@ -11,183 +11,225 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as appIndexImport } from './routes/(app)/index'
-import { Route as appProfileImport } from './routes/(app)/profile'
-import { Route as productsProductsIndexImport } from './routes/(products)/products.index'
-import { Route as productsProductsCreateImport } from './routes/(products)/products.create'
-import { Route as productsProductsSlugImport } from './routes/(products)/products.$slug'
-import { Route as productsProductsSlugEditImport } from './routes/(products)/products.$slug.edit'
+import { Route as AuthImport } from './routes/_auth'
+import { Route as IndexImport } from './routes/index'
+import { Route as ProductsIndexImport } from './routes/products.index'
+import { Route as ProductsSlugImport } from './routes/products.$slug'
+import { Route as AuthProfileImport } from './routes/_auth.profile'
+import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as AuthProductsCreateImport } from './routes/_auth.products.create'
+import { Route as AuthProductsSlugEditImport } from './routes/_auth.products.$slug.edit'
 
 // Create/Update Routes
 
-const appIndexRoute = appIndexImport.update({
-  id: '/(app)/',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const appProfileRoute = appProfileImport.update({
-  id: '/(app)/profile',
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const productsProductsIndexRoute = productsProductsIndexImport.update({
-  id: '/(products)/products/',
+const ProductsIndexRoute = ProductsIndexImport.update({
+  id: '/products/',
   path: '/products/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const productsProductsCreateRoute = productsProductsCreateImport.update({
-  id: '/(products)/products/create',
-  path: '/products/create',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const productsProductsSlugRoute = productsProductsSlugImport.update({
-  id: '/(products)/products/$slug',
+const ProductsSlugRoute = ProductsSlugImport.update({
+  id: '/products/$slug',
   path: '/products/$slug',
   getParentRoute: () => rootRoute,
 } as any)
 
-const productsProductsSlugEditRoute = productsProductsSlugEditImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => productsProductsSlugRoute,
+const AuthProfileRoute = AuthProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const authLoginRoute = authLoginImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthProductsCreateRoute = AuthProductsCreateImport.update({
+  id: '/products/create',
+  path: '/products/create',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthProductsSlugEditRoute = AuthProductsSlugEditImport.update({
+  id: '/products/$slug/edit',
+  path: '/products/$slug/edit',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/(app)/profile': {
-      id: '/(app)/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof appProfileImport
-      parentRoute: typeof rootRoute
-    }
-    '/(app)/': {
-      id: '/(app)/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof appIndexImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/(products)/products/$slug': {
-      id: '/(products)/products/$slug'
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/profile': {
+      id: '/_auth/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthProfileImport
+      parentRoute: typeof AuthImport
+    }
+    '/products/$slug': {
+      id: '/products/$slug'
       path: '/products/$slug'
       fullPath: '/products/$slug'
-      preLoaderRoute: typeof productsProductsSlugImport
+      preLoaderRoute: typeof ProductsSlugImport
       parentRoute: typeof rootRoute
     }
-    '/(products)/products/create': {
-      id: '/(products)/products/create'
-      path: '/products/create'
-      fullPath: '/products/create'
-      preLoaderRoute: typeof productsProductsCreateImport
-      parentRoute: typeof rootRoute
-    }
-    '/(products)/products/': {
-      id: '/(products)/products/'
+    '/products/': {
+      id: '/products/'
       path: '/products'
       fullPath: '/products'
-      preLoaderRoute: typeof productsProductsIndexImport
+      preLoaderRoute: typeof ProductsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/(products)/products/$slug/edit': {
-      id: '/(products)/products/$slug/edit'
-      path: '/edit'
+    '/_auth/products/create': {
+      id: '/_auth/products/create'
+      path: '/products/create'
+      fullPath: '/products/create'
+      preLoaderRoute: typeof AuthProductsCreateImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/products/$slug/edit': {
+      id: '/_auth/products/$slug/edit'
+      path: '/products/$slug/edit'
       fullPath: '/products/$slug/edit'
-      preLoaderRoute: typeof productsProductsSlugEditImport
-      parentRoute: typeof productsProductsSlugImport
+      preLoaderRoute: typeof AuthProductsSlugEditImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface productsProductsSlugRouteChildren {
-  productsProductsSlugEditRoute: typeof productsProductsSlugEditRoute
+interface AuthRouteChildren {
+  AuthProfileRoute: typeof AuthProfileRoute
+  AuthProductsCreateRoute: typeof AuthProductsCreateRoute
+  AuthProductsSlugEditRoute: typeof AuthProductsSlugEditRoute
 }
 
-const productsProductsSlugRouteChildren: productsProductsSlugRouteChildren = {
-  productsProductsSlugEditRoute: productsProductsSlugEditRoute,
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthProfileRoute: AuthProfileRoute,
+  AuthProductsCreateRoute: AuthProductsCreateRoute,
+  AuthProductsSlugEditRoute: AuthProductsSlugEditRoute,
 }
 
-const productsProductsSlugRouteWithChildren =
-  productsProductsSlugRoute._addFileChildren(productsProductsSlugRouteChildren)
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '/profile': typeof appProfileRoute
-  '/': typeof appIndexRoute
-  '/products/$slug': typeof productsProductsSlugRouteWithChildren
-  '/products/create': typeof productsProductsCreateRoute
-  '/products': typeof productsProductsIndexRoute
-  '/products/$slug/edit': typeof productsProductsSlugEditRoute
+  '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/profile': typeof AuthProfileRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/products': typeof ProductsIndexRoute
+  '/products/create': typeof AuthProductsCreateRoute
+  '/products/$slug/edit': typeof AuthProductsSlugEditRoute
 }
 
 export interface FileRoutesByTo {
-  '/profile': typeof appProfileRoute
-  '/': typeof appIndexRoute
-  '/products/$slug': typeof productsProductsSlugRouteWithChildren
-  '/products/create': typeof productsProductsCreateRoute
-  '/products': typeof productsProductsIndexRoute
-  '/products/$slug/edit': typeof productsProductsSlugEditRoute
+  '/': typeof IndexRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/profile': typeof AuthProfileRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/products': typeof ProductsIndexRoute
+  '/products/create': typeof AuthProductsCreateRoute
+  '/products/$slug/edit': typeof AuthProductsSlugEditRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/(app)/profile': typeof appProfileRoute
-  '/(app)/': typeof appIndexRoute
-  '/(products)/products/$slug': typeof productsProductsSlugRouteWithChildren
-  '/(products)/products/create': typeof productsProductsCreateRoute
-  '/(products)/products/': typeof productsProductsIndexRoute
-  '/(products)/products/$slug/edit': typeof productsProductsSlugEditRoute
+  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/_auth/profile': typeof AuthProfileRoute
+  '/products/$slug': typeof ProductsSlugRoute
+  '/products/': typeof ProductsIndexRoute
+  '/_auth/products/create': typeof AuthProductsCreateRoute
+  '/_auth/products/$slug/edit': typeof AuthProductsSlugEditRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/profile'
     | '/'
+    | ''
+    | '/login'
+    | '/profile'
     | '/products/$slug'
-    | '/products/create'
     | '/products'
+    | '/products/create'
     | '/products/$slug/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/profile'
     | '/'
+    | ''
+    | '/login'
+    | '/profile'
     | '/products/$slug'
-    | '/products/create'
     | '/products'
+    | '/products/create'
     | '/products/$slug/edit'
   id:
     | '__root__'
-    | '/(app)/profile'
-    | '/(app)/'
-    | '/(products)/products/$slug'
-    | '/(products)/products/create'
-    | '/(products)/products/'
-    | '/(products)/products/$slug/edit'
+    | '/'
+    | '/_auth'
+    | '/(auth)/login'
+    | '/_auth/profile'
+    | '/products/$slug'
+    | '/products/'
+    | '/_auth/products/create'
+    | '/_auth/products/$slug/edit'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  appProfileRoute: typeof appProfileRoute
-  appIndexRoute: typeof appIndexRoute
-  productsProductsSlugRoute: typeof productsProductsSlugRouteWithChildren
-  productsProductsCreateRoute: typeof productsProductsCreateRoute
-  productsProductsIndexRoute: typeof productsProductsIndexRoute
+  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
+  ProductsSlugRoute: typeof ProductsSlugRoute
+  ProductsIndexRoute: typeof ProductsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  appProfileRoute: appProfileRoute,
-  appIndexRoute: appIndexRoute,
-  productsProductsSlugRoute: productsProductsSlugRouteWithChildren,
-  productsProductsCreateRoute: productsProductsCreateRoute,
-  productsProductsIndexRoute: productsProductsIndexRoute,
+  IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  authLoginRoute: authLoginRoute,
+  ProductsSlugRoute: ProductsSlugRoute,
+  ProductsIndexRoute: ProductsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -200,34 +242,44 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/(app)/profile",
-        "/(app)/",
-        "/(products)/products/$slug",
-        "/(products)/products/create",
-        "/(products)/products/"
+        "/",
+        "/_auth",
+        "/(auth)/login",
+        "/products/$slug",
+        "/products/"
       ]
     },
-    "/(app)/profile": {
-      "filePath": "(app)/profile.tsx"
+    "/": {
+      "filePath": "index.tsx"
     },
-    "/(app)/": {
-      "filePath": "(app)/index.tsx"
-    },
-    "/(products)/products/$slug": {
-      "filePath": "(products)/products.$slug.tsx",
+    "/_auth": {
+      "filePath": "_auth.tsx",
       "children": [
-        "/(products)/products/$slug/edit"
+        "/_auth/profile",
+        "/_auth/products/create",
+        "/_auth/products/$slug/edit"
       ]
     },
-    "/(products)/products/create": {
-      "filePath": "(products)/products.create.tsx"
+    "/(auth)/login": {
+      "filePath": "(auth)/login.tsx"
     },
-    "/(products)/products/": {
-      "filePath": "(products)/products.index.tsx"
+    "/_auth/profile": {
+      "filePath": "_auth.profile.tsx",
+      "parent": "/_auth"
     },
-    "/(products)/products/$slug/edit": {
-      "filePath": "(products)/products.$slug.edit.tsx",
-      "parent": "/(products)/products/$slug"
+    "/products/$slug": {
+      "filePath": "products.$slug.tsx"
+    },
+    "/products/": {
+      "filePath": "products.index.tsx"
+    },
+    "/_auth/products/create": {
+      "filePath": "_auth.products.create.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/products/$slug/edit": {
+      "filePath": "_auth.products.$slug.edit.tsx",
+      "parent": "/_auth"
     }
   }
 }

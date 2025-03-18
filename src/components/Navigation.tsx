@@ -1,4 +1,5 @@
-import { Link, useRouteContext } from "@tanstack/react-router"
+import { useAuth0 } from "@auth0/auth0-react"
+import { Link } from "@tanstack/react-router"
 import { User } from "lucide-react"
 
 import LogInButton from "@/components/auth/logInButton"
@@ -10,12 +11,11 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+
 } from "@/components/ui/dropdown-menu"
 
 export default function Navigation() {
-    const context = useRouteContext({
-        from: "__root__",
-    })
+    const { isAuthenticated, logout } = useAuth0()
 
     return (
         <header>
@@ -37,7 +37,7 @@ export default function Navigation() {
                         </Link>
                     </li>
                 </ul>
-                {context.isAuthenticated ? (
+                {isAuthenticated ? (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline">
@@ -59,7 +59,7 @@ export default function Navigation() {
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 onClick={() =>
-                                    context.logout({
+                                    logout({
                                         logoutParams: {
                                             returnTo: window.location.origin,
                                         },
