@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as appIndexImport } from './routes/(app)/index'
+import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as appProfileImport } from './routes/(app)/profile'
 import { Route as productsProductsIndexImport } from './routes/(products)/products.index'
 import { Route as productsProductsCreateImport } from './routes/(products)/products.create'
@@ -23,6 +24,12 @@ import { Route as productsProductsSlugEditImport } from './routes/(products)/pro
 const appIndexRoute = appIndexImport.update({
   id: '/(app)/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authLoginRoute = authLoginImport.update({
+  id: '/(auth)/login',
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -65,6 +72,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof appProfileImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginImport
       parentRoute: typeof rootRoute
     }
     '/(app)/': {
@@ -120,6 +134,7 @@ const productsProductsSlugRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/profile': typeof appProfileRoute
+  '/login': typeof authLoginRoute
   '/': typeof appIndexRoute
   '/products/$slug': typeof productsProductsSlugRouteWithChildren
   '/products/create': typeof productsProductsCreateRoute
@@ -129,6 +144,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/profile': typeof appProfileRoute
+  '/login': typeof authLoginRoute
   '/': typeof appIndexRoute
   '/products/$slug': typeof productsProductsSlugRouteWithChildren
   '/products/create': typeof productsProductsCreateRoute
@@ -139,6 +155,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/(app)/profile': typeof appProfileRoute
+  '/(auth)/login': typeof authLoginRoute
   '/(app)/': typeof appIndexRoute
   '/(products)/products/$slug': typeof productsProductsSlugRouteWithChildren
   '/(products)/products/create': typeof productsProductsCreateRoute
@@ -150,6 +167,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/profile'
+    | '/login'
     | '/'
     | '/products/$slug'
     | '/products/create'
@@ -158,6 +176,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/profile'
+    | '/login'
     | '/'
     | '/products/$slug'
     | '/products/create'
@@ -166,6 +185,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/(app)/profile'
+    | '/(auth)/login'
     | '/(app)/'
     | '/(products)/products/$slug'
     | '/(products)/products/create'
@@ -176,6 +196,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   appProfileRoute: typeof appProfileRoute
+  authLoginRoute: typeof authLoginRoute
   appIndexRoute: typeof appIndexRoute
   productsProductsSlugRoute: typeof productsProductsSlugRouteWithChildren
   productsProductsCreateRoute: typeof productsProductsCreateRoute
@@ -184,6 +205,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   appProfileRoute: appProfileRoute,
+  authLoginRoute: authLoginRoute,
   appIndexRoute: appIndexRoute,
   productsProductsSlugRoute: productsProductsSlugRouteWithChildren,
   productsProductsCreateRoute: productsProductsCreateRoute,
@@ -201,6 +223,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/(app)/profile",
+        "/(auth)/login",
         "/(app)/",
         "/(products)/products/$slug",
         "/(products)/products/create",
@@ -209,6 +232,9 @@ export const routeTree = rootRoute
     },
     "/(app)/profile": {
       "filePath": "(app)/profile.tsx"
+    },
+    "/(auth)/login": {
+      "filePath": "(auth)/login.tsx"
     },
     "/(app)/": {
       "filePath": "(app)/index.tsx"
