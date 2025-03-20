@@ -2,7 +2,6 @@ import { useAuth0 } from "@auth0/auth0-react"
 import { Link } from "@tanstack/react-router"
 import { User } from "lucide-react"
 
-import LogInButton from "@/components/auth/logInButton"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -11,11 +10,14 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-
 } from "@/components/ui/dropdown-menu"
+import { useLogin } from "@/hooks/useLogin"
+import { useLogout } from "@/hooks/useLogout"
 
 export default function Navigation() {
-    const { isAuthenticated, logout } = useAuth0()
+    const { isAuthenticated } = useAuth0()
+    const login = useLogin()
+    const logout = useLogout()
 
     return (
         <header>
@@ -58,13 +60,7 @@ export default function Navigation() {
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                                onClick={() =>
-                                    logout({
-                                        logoutParams: {
-                                            returnTo: window.location.origin,
-                                        },
-                                    })
-                                }
+                                onClick={logout}
                                 className="cursor-pointer"
                             >
                                 Logout
@@ -72,7 +68,7 @@ export default function Navigation() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 ) : (
-                    <LogInButton />
+                    <Button onClick={login}>Log in</Button>
                 )}
             </nav>
         </header>
