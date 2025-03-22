@@ -7,6 +7,7 @@ const envSchema = z.object({
     auth: z.object({
         VITE_AUTH_DOMAIN: z.string(),
         VITE_AUTH_CLIENT_ID: z.string(),
+        VITE_AUTH_AUDIENCE: z.string(),
     }),
 })
 

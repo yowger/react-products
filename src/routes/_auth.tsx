@@ -9,6 +9,7 @@ export const Route = createFileRoute("/_auth")({
                     redirect: location.href,
                 },
             })
+            
         }
     },
     component: AuthLayout,

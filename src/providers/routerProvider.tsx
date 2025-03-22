@@ -1,4 +1,4 @@
-import { useAuth0, User } from "@auth0/auth0-react"
+import { type User } from "@auth0/auth0-react"
 import {
     RouterProvider as RouterProviderLib,
     createBrowserHistory,
@@ -6,14 +6,16 @@ import {
 } from "@tanstack/react-router"
 
 import { routeTree } from "@/routeTree.gen"
-import { queryClient } from "@/providers/queryClientProvider"
+import { type AppAbility } from "@/lib/abilities/ability"
+import { type QueryClient } from "@tanstack/react-query"
 
 const router = createRouter({
     routeTree,
     context: {
-        user: undefined!,
+        ability: undefined!,
         isAuthenticated: false,
-        queryClient,
+        user: undefined!,
+        queryClient: undefined!,
     },
     history: createBrowserHistory(),
     defaultPreload: "intent",
@@ -27,17 +29,21 @@ declare module "@tanstack/react-router" {
     }
 }
 
-export default function RouterProvider() {
-    const { user, isAuthenticated, isLoading, logout } = useAuth0()
+interface RouterProviderProps extends React.PropsWithChildren {
+    ability: AppAbility
+    user: User | undefined
+    isAuthenticated: boolean
+    queryClient: QueryClient
+}
 
-    if (isLoading) {
-        return <div>Loading...</div>
-    }
+export default function RouterProvider(props: RouterProviderProps) {
+    const { ability, isAuthenticated, user, queryClient } = props
 
     return (
         <RouterProviderLib
             router={router}
             context={{
+                ability,
                 user,
                 isAuthenticated,
                 queryClient,

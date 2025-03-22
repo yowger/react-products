@@ -1,20 +1,25 @@
-import { LogoutOptions, User } from "@auth0/auth0-react"
+import { type User } from "@auth0/auth0-react"
 import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import {
     createRootRouteWithContext,
-    ErrorComponentProps,
+    type ErrorComponentProps,
     Link,
     Outlet,
     useRouter,
 } from "@tanstack/react-router"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { QueryClient, useQueryErrorResetBoundary } from "@tanstack/react-query"
+import {
+    type QueryClient,
+    useQueryErrorResetBoundary,
+} from "@tanstack/react-query"
 import { useEffect } from "react"
 
 import Navigation from "@/components/Navigation"
 import { Button } from "@/components/ui/button"
+import { type AppAbility } from "@/lib/abilities/ability"
 
 export const Route = createRootRouteWithContext<{
+    ability: AppAbility
     user: User
     isAuthenticated: boolean
     queryClient: QueryClient
@@ -57,6 +62,7 @@ function ErrorComponent(_props: ErrorComponentProps) {
     return (
         <div>
             <p>Something went wrong.</p>
+
             <Button
                 onClick={() => {
                     router.invalidate()

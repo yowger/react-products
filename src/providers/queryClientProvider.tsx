@@ -1,27 +1,19 @@
 import React from "react"
 
 import {
-    QueryClient,
     QueryClientProvider as QueryClientLibProvider,
+    type QueryClient,
 } from "@tanstack/react-query"
 
-export const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 1000 * 60 * 5,
-            refetchOnWindowFocus: false,
-            retry: 2,
-        },
-    },
-})
-
-type QueryClientProvider = React.PropsWithChildren
+interface QueryClientProvider extends React.PropsWithChildren {
+    client: QueryClient
+}
 
 export default function QueryClientProvider(props: QueryClientProvider) {
-    const { children } = props
+    const { children, client } = props
 
     return (
-        <QueryClientLibProvider client={queryClient}>
+        <QueryClientLibProvider client={client}>
             {children}
         </QueryClientLibProvider>
     )

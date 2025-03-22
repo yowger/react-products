@@ -2,7 +2,8 @@ import { StrictMode } from "react"
 import ReactDOM from "react-dom/client"
 
 import "@/index.css"
-import { Auth0Provider, RouterProvider, QueryClientProvider } from "@/providers"
+import AppProvider from "@/providers/appProvider"
+import Auth0Provider from "@/providers/auth0Provider"
 
 const rootElement = document.getElementById("root")!
 if (!rootElement.innerHTML) {
@@ -10,9 +11,7 @@ if (!rootElement.innerHTML) {
     root.render(
         <StrictMode>
             <Auth0Provider>
-                <QueryClientProvider>
-                    <RouterProvider />
-                </QueryClientProvider>
+                <AppProvider />
             </Auth0Provider>
         </StrictMode>
     )

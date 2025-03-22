@@ -15,7 +15,7 @@ import { useLogin } from "@/hooks/useLogin"
 import { useLogout } from "@/hooks/useLogout"
 
 export default function Navigation() {
-    const { isAuthenticated } = useAuth0()
+    const { user, isAuthenticated } = useAuth0()
     const login = useLogin()
     const logout = useLogout()
 
@@ -43,7 +43,7 @@ export default function Navigation() {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline">
-                                <User />
+                                {user?.given_name} <User />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>

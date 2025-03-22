@@ -6,7 +6,12 @@ export const Route = createFileRoute("/_auth/profile")({
 })
 
 function RouteComponent() {
-    const { user } = useAuth0()
+    const { user, getAccessTokenSilently } = useAuth0()
+    console.log("🚀 ~ RouteComponent ~ user:", user)
+
+    getAccessTokenSilently().then((token) => {
+        console.log("token", token)
+    })
 
     return <div>{user?.name} asd</div>
 }
