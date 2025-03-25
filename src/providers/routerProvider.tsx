@@ -4,10 +4,10 @@ import {
     createBrowserHistory,
     createRouter,
 } from "@tanstack/react-router"
+import { type QueryClient } from "@tanstack/react-query"
 
 import { routeTree } from "@/routeTree.gen"
 import { type AppAbility } from "@/lib/abilities/ability"
-import { type QueryClient } from "@tanstack/react-query"
 
 const router = createRouter({
     routeTree,

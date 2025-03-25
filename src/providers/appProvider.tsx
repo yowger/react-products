@@ -19,7 +19,6 @@ export const queryClient = new QueryClient({
 export default function AppProvider() {
     const { user, isAuthenticated, isLoading } = useAuth0()
     const ability = defineAbilitiesFor(user)
-    console.log("🚀 ~ AppProvider ~ ability:", ability)
 
     if (isLoading) {
         return <div>Loading...</div>

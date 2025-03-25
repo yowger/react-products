@@ -2,8 +2,8 @@ import { useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Calendar, Pencil, Trash } from "lucide-react"
 
-import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
 import { Button } from "@/components/ui/button"
+import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
 import { Can } from "@/lib/abilities/abilityContext"
 
 export default function Post() {

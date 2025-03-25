@@ -5,11 +5,11 @@ import {
     type QueryClient,
 } from "@tanstack/react-query"
 
-interface QueryClientProvider extends React.PropsWithChildren {
+interface QueryClientProviderProps extends React.PropsWithChildren {
     client: QueryClient
 }
 
-export default function QueryClientProvider(props: QueryClientProvider) {
+export default function QueryClientProvider(props: QueryClientProviderProps) {
     const { children, client } = props
 
     return (

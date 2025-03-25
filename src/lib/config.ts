@@ -4,6 +4,7 @@ import mapAndValidateSchema from "@/lib/validations/mapAndValidate"
 
 const envSchema = z.object({
     VITE_API_URL: z.string().url(),
+    VITE_API_KEY: z.string(),
     auth: z.object({
         VITE_AUTH_DOMAIN: z.string(),
         VITE_AUTH_CLIENT_ID: z.string(),
