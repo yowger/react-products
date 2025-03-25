@@ -138,3 +138,30 @@ export default defineAbility((can, cannot) => {
   can('delete', 'Comment', { author_id: user.id });
 });
 ```
+
+## 🛡️ Auth0 Role Management and Role Assignment
+Be sure Auth0 is configured to assign roles to get access to authorized routes and features such as edit/update post and or comments.
+
+✅ **Post-Login Action to Assign Default Role:**
+
+```javascript
+exports.onExecutePostLogin = async (event, api) => {
+    if (!event.authorization?.roles || event.authorization.roles.length === 0) {
+        const { ManagementClient } = require("auth0")
+
+        const management = new ManagementClient({
+            domain: event.secrets.domain,
+            clientId: event.secrets.clientId,
+            clientSecret: event.secrets.clientSecret,
+        })
+
+        const params = { id: event.user.user_id }
+        const data = { roles: [event.secrets.defaultRoleId] }
+
+        try {
+            await management.users.assignRoles(params, data)
+        } catch (e) {
+            console.error("Error assigning role:", e)
+        }
+    }
+}

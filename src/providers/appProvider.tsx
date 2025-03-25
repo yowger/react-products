@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { QueryClient } from "@tanstack/react-query"
+import { jwtDecode } from "jwt-decode"
 
 import defineAbilitiesFor from "@/lib/abilities/ability"
 import QueryClientProvider from "@/providers/queryClientProvider"
@@ -17,7 +18,15 @@ export const queryClient = new QueryClient({
 })
 
 export default function AppProvider() {
-    const { user, isAuthenticated, isLoading } = useAuth0()
+    const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0()
+
+    getIdTokenClaims().then((token) => {
+        if (token?.__raw) {
+            const decodedToken = jwtDecode(token.__raw)
+            console.log("🚀 ~ getIdTokenClaims ~ decodedToken:", decodedToken)
+        }
+    })
+
     const ability = defineAbilitiesFor(user)
 
     if (isLoading) {

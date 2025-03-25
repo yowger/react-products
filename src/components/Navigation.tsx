@@ -29,13 +29,13 @@ export default function Navigation() {
                 <ul className="flex p-4 font-medium">
                     <li>
                         <Link
-                            to="/products"
+                            to="/posts"
                             activeProps={{
                                 className: "font-semibold",
                             }}
                             className="block py-2 px-3"
                         >
-                            Home
+                            Posts
                         </Link>
                     </li>
                 </ul>
