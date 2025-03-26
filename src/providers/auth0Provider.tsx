@@ -14,7 +14,11 @@ export default function Auth0Provider(props: Auth0ProviderProps) {
                 redirect_uri: window.location.origin,
                 audience: config.auth.VITE_AUTH_AUDIENCE,
             }}
-            cacheLocation="memory"
+            /* since I'm using a simple api from supabse, there are limitations such as storing cookies.
+            So for this simple app I will use local storage to persist logged in user.
+            in real app scenario, consider saving refresh token in your backend cookies and retrieving it on refresh to persist user.
+            */
+            cacheLocation="localstorage"
             useRefreshTokens={true}
         >
             {children}
