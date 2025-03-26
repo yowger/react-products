@@ -140,9 +140,9 @@ export default defineAbility((can, cannot) => {
 ```
 
 ## 🛡️ Auth0 Role Management and Role Assignment
-Be sure Auth0 is configured to assign roles to get access to authorized routes and features such as edit/update post and or comments.
+Be sure Auth0 is configured to assign roles to get access to authorized routes and features such as edit/update post and or comments. 
 
-✅ **Post-Login Action to Assign Default Role:**
+**Assign Default Role**
 
 ```javascript
 exports.onExecutePostLogin = async (event, api) => {
@@ -165,3 +165,22 @@ exports.onExecutePostLogin = async (event, api) => {
         }
     }
 }
+```
+
+**Assign Roles to token**
+
+```javascript
+const namespace = "https://your-namespace.com/"
+
+if (event.authorization) {
+  api.idToken.setCustomClaim(`${namespace}roles`, event.authorization.roles)
+  api.accessToken.setCustomClaim(`${namespace}roles`, event.authorization.roles)
+}
+```
+
+### ⚡️ **Post-Login Action Flow**
+Set up the flow as follows:
+1. **Start**
+2. **Assign Default Role**
+3. **Assign Roles to Token**
+4. **Complete Token Issued**
