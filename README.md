@@ -184,3 +184,28 @@ Set up the flow as follows:
 2. **Assign Default Role**
 3. **Assign Roles to Token**
 4. **Complete Token Issued**
+
+---
+
+## ⚠️ **Limitations and Considerations**
+
+This project demonstrates RBAC with Auth0 and CASL, but due to the simplicity of the setup (Supabase API + Auth0 without a backend), there are some limitations:
+
+1. **No Secure Token Refreshing:**
+   - The app uses `localStorage` to persist the Auth0 session, which is less secure than storing tokens in HTTP-only, secure cookies.
+   - In real-world app, refresh tokens should be stored and managed securely via a backend.
+
+2. **No Backend API for User Data:**
+   - Since Supabase is used as the API, it does not have direct integration with Auth0 to fetch user profiles.
+   - To display user names in posts and comments, the username and avatar are stored in the `posts` and `comments` tables. Consider creating another table for user and using auth0 webhooks to sync data.
+
+3. **No Real-Time Sync Between Auth0 and Supabase:**
+   - For real-time sync between Auth0 and Supabase, a webhook or backend listener would be required to update Supabase when Auth0 profile/role changes.
+
+---
+   **Workaround Suggestion:**
+- For a production-grade app, introduce a backend that:
+    - Stores and refreshes Auth0 tokens securely.
+    - Listens to Auth0 events via webhooks to sync user updates with Supabase.
+    - Provides an API endpoint to fetch user information securely.
+
