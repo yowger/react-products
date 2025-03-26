@@ -1,23 +1,37 @@
+import { User } from "@auth0/auth0-react"
 import { AbilityBuilder, createMongoAbility, MongoAbility } from "@casl/ability"
 
+import { type Post } from "@/types/post"
+
 export type Actions = "manage" | "read" | "create" | "update" | "delete"
-export type Subjects = "Post" | "Comment" | "all"
+export type Subjects = Post | "Post" | "Comment" | "all"
 export type AppAbility = MongoAbility<[Actions, Subjects]>
 
-export default function defineAbilitiesFor(user: any | undefined) {
-    const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility)
+export type UserRole = "admin" | "user" | "guest"
 
-    if (user?.role === "admin") {
+export default function defineAbilitiesFor(
+    user: User | undefined,
+    roles: UserRole[]
+) {
+    const normalizedRoles = roles.map((role) => role.toLowerCase())
+
+    const { can, cannot, build } = new AbilityBuilder<AppAbility>(
+        createMongoAbility
+    )
+
+    if (normalizedRoles.includes("admin")) {
         can("manage", "all")
-    } else if (user?.role === "user") {
+        cannot("delete", "Post")
+        cannot("delete", "Comment")
+    } else if (normalizedRoles.includes("User")) {
         can("read", "Post")
         can("create", "Post")
-        can("update", "Post", { author_id: user.sub })
-        can("delete", "Post", { author_id: user.sub })
+        can("update", "Post", { author_id: user?.sub })
+        can("delete", "Post", { author_id: user?.sub })
 
         can("read", "Comment")
         can("create", "Comment")
-        can("delete", "Comment", { author_id: user.sub })
+        can("delete", "Comment", { author_id: user?.sub })
     } else {
         can("read", "Post")
         can("read", "Comment")

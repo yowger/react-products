@@ -3,7 +3,7 @@ import type {
     GetPostsParams,
     Post,
     CreatePostPayload,
-} from "@/features/posts/types"
+} from "@/types/post"
 import { createQueryString } from "@/lib/utils/queryParams"
 
 const TABLE_POSTS = "posts"

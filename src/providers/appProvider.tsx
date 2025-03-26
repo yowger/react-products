@@ -1,8 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { QueryClient } from "@tanstack/react-query"
 import { jwtDecode } from "jwt-decode"
+import { useEffect, useState } from "react"
 
-import defineAbilitiesFor from "@/lib/abilities/ability"
+import defineAbilitiesFor, { type UserRole } from "@/lib/abilities/ability"
 import QueryClientProvider from "@/providers/queryClientProvider"
 import AbilityProvider from "@/providers/abilityProvider"
 import RouterProvider from "@/providers/routerProvider"
@@ -18,16 +19,32 @@ export const queryClient = new QueryClient({
 })
 
 export default function AppProvider() {
-    const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0()
+    const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+        useAuth0()
 
-    getIdTokenClaims().then((token) => {
-        if (token?.__raw) {
-            const decodedToken = jwtDecode(token.__raw)
-            console.log("🚀 ~ getIdTokenClaims ~ decodedToken:", decodedToken)
+    const [roles, setRoles] = useState<UserRole[]>(["guest"])
+
+    useEffect(() => {
+        async function getUserRoles() {
+            if (isAuthenticated) {
+                try {
+                    const token = await getAccessTokenSilently()
+                    const decodedToken: any = jwtDecode(token)
+
+                    const namespace = "https://shopey.com/roles"
+                    const rolesFromToken = decodedToken[namespace] || []
+
+                    setRoles(rolesFromToken)
+                } catch (error) {
+                    console.error("Error fetching roles:", error)
+                }
+            }
         }
-    })
 
-    const ability = defineAbilitiesFor(user)
+        getUserRoles()
+    }, [isAuthenticated, getAccessTokenSilently])
+
+    const ability = defineAbilitiesFor(user, roles)
 
     if (isLoading) {
         return <div>Loading...</div>

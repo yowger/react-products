@@ -1,6 +1,6 @@
-import { useParams } from "@tanstack/react-router"
+import { Link, useParams } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { Calendar, Pencil, Trash } from "lucide-react"
+import { Pencil, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
@@ -15,7 +15,7 @@ export default function Post() {
 
     return (
         <div className="flex justify-center items-center">
-            <div className="w-full max-w-2xl bg-white shadow-md rounded-lg p-6 space-y-6">
+            <div className="w-full max-w-2xl bg-white shadow-md rounded-lg p-6 space-y-5">
                 <div>
                     <div className="flex justify-between">
                         <h1 className="text-3xl font-bold text-gray-800 mb-2">
@@ -23,37 +23,49 @@ export default function Post() {
                         </h1>
 
                         <div className="flex gap-2">
-                            <Can I="update" a="Post">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="cursor-pointer"
-                                >
-                                    <Trash />
-                                </Button>
+                            <Can I="update" a="Post" this={postData}>
+                                {() => (
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="cursor-pointer"
+                                    >
+                                        <Trash />
+                                    </Button>
+                                )}
                             </Can>
-                            <Can I="delete" a="Post">
+
+                            <Can I="delete" a="Post" this={postData}>
                                 <Button
                                     variant="outline"
                                     size="icon"
                                     className="cursor-pointer"
+                                    asChild={true}
                                 >
-                                    <Pencil />
+                                    <Link
+                                        to="/posts/$id/edit"
+                                        params={{ id: postId }}
+                                    >
+                                        <Pencil />
+                                    </Link>
                                 </Button>
                             </Can>
                         </div>
                     </div>
 
-                    <p className="mb-2 flex items-center text-gray-500 gap-2 font-semibold text-sm">
-                        <Calendar size={15} />
+                    <div className="flex gap-5 items-center">
+                        <span className="text-sm text-gray-800">
+                            by: auth0 name here
+                        </span>
 
-                        <span>
+                        <span className="flex text-sm text-gray-800">
+                            created at:{" "}
                             {new Date(postData.created_at).toLocaleDateString()}
                         </span>
-                    </p>
+                    </div>
                 </div>
 
-                <p className="text-lg text-gray-700 leading-relaxed">
+                <p className="text-lg text-gray-800">
                     {postData.content}
                 </p>
             </div>

@@ -1,7 +1,7 @@
 import { notFound } from "@tanstack/react-router"
 
 import publicAxios from "@/api/axios/publicAxios"
-import type { Post, UpdatePostPayload } from "@/features/posts/types"
+import type { Post, UpdatePostPayload } from "@/types/post"
 
 const TABLE_POSTS = "posts"
 
