@@ -11,19 +11,22 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PostLayoutImport } from './routes/_postLayout'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
-import { Route as ProductsIndexImport } from './routes/products.index'
-import { Route as PostsIndexImport } from './routes/posts.index'
-import { Route as ProductsSlugImport } from './routes/products.$slug'
 import { Route as PostsIdImport } from './routes/posts.$id'
 import { Route as AuthProfileImport } from './routes/_auth.profile'
 import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as PostLayoutPostsIndexImport } from './routes/_postLayout.posts.index'
 import { Route as PostsIdEditImport } from './routes/posts.$id.edit'
-import { Route as AuthProductsCreateImport } from './routes/_auth.products.create'
-import { Route as AuthProductsSlugEditImport } from './routes/_auth.products.$slug.edit'
+import { Route as AuthPostsCreateImport } from './routes/_auth.posts.create'
 
 // Create/Update Routes
+
+const PostLayoutRoute = PostLayoutImport.update({
+  id: '/_postLayout',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthRoute = AuthImport.update({
   id: '/_auth',
@@ -33,24 +36,6 @@ const AuthRoute = AuthImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProductsIndexRoute = ProductsIndexImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const PostsIndexRoute = PostsIndexImport.update({
-  id: '/posts/',
-  path: '/posts/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProductsSlugRoute = ProductsSlugImport.update({
-  id: '/products/$slug',
-  path: '/products/$slug',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -72,21 +57,21 @@ const authLoginRoute = authLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PostLayoutPostsIndexRoute = PostLayoutPostsIndexImport.update({
+  id: '/posts/',
+  path: '/posts/',
+  getParentRoute: () => PostLayoutRoute,
+} as any)
+
 const PostsIdEditRoute = PostsIdEditImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => PostsIdRoute,
 } as any)
 
-const AuthProductsCreateRoute = AuthProductsCreateImport.update({
-  id: '/products/create',
-  path: '/products/create',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthProductsSlugEditRoute = AuthProductsSlugEditImport.update({
-  id: '/products/$slug/edit',
-  path: '/products/$slug/edit',
+const AuthPostsCreateRoute = AuthPostsCreateImport.update({
+  id: '/posts/create',
+  path: '/posts/create',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -106,6 +91,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/_postLayout': {
+      id: '/_postLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PostLayoutImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/login': {
@@ -129,32 +121,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdImport
       parentRoute: typeof rootRoute
     }
-    '/products/$slug': {
-      id: '/products/$slug'
-      path: '/products/$slug'
-      fullPath: '/products/$slug'
-      preLoaderRoute: typeof ProductsSlugImport
-      parentRoute: typeof rootRoute
-    }
-    '/posts/': {
-      id: '/posts/'
-      path: '/posts'
-      fullPath: '/posts'
-      preLoaderRoute: typeof PostsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/products/': {
-      id: '/products/'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof ProductsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/products/create': {
-      id: '/_auth/products/create'
-      path: '/products/create'
-      fullPath: '/products/create'
-      preLoaderRoute: typeof AuthProductsCreateImport
+    '/_auth/posts/create': {
+      id: '/_auth/posts/create'
+      path: '/posts/create'
+      fullPath: '/posts/create'
+      preLoaderRoute: typeof AuthPostsCreateImport
       parentRoute: typeof AuthImport
     }
     '/posts/$id/edit': {
@@ -164,12 +135,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdEditImport
       parentRoute: typeof PostsIdImport
     }
-    '/_auth/products/$slug/edit': {
-      id: '/_auth/products/$slug/edit'
-      path: '/products/$slug/edit'
-      fullPath: '/products/$slug/edit'
-      preLoaderRoute: typeof AuthProductsSlugEditImport
-      parentRoute: typeof AuthImport
+    '/_postLayout/posts/': {
+      id: '/_postLayout/posts/'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostLayoutPostsIndexImport
+      parentRoute: typeof PostLayoutImport
     }
   }
 }
@@ -178,17 +149,27 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthProfileRoute: typeof AuthProfileRoute
-  AuthProductsCreateRoute: typeof AuthProductsCreateRoute
-  AuthProductsSlugEditRoute: typeof AuthProductsSlugEditRoute
+  AuthPostsCreateRoute: typeof AuthPostsCreateRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
-  AuthProductsCreateRoute: AuthProductsCreateRoute,
-  AuthProductsSlugEditRoute: AuthProductsSlugEditRoute,
+  AuthPostsCreateRoute: AuthPostsCreateRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface PostLayoutRouteChildren {
+  PostLayoutPostsIndexRoute: typeof PostLayoutPostsIndexRoute
+}
+
+const PostLayoutRouteChildren: PostLayoutRouteChildren = {
+  PostLayoutPostsIndexRoute: PostLayoutPostsIndexRoute,
+}
+
+const PostLayoutRouteWithChildren = PostLayoutRoute._addFileChildren(
+  PostLayoutRouteChildren,
+)
 
 interface PostsIdRouteChildren {
   PostsIdEditRoute: typeof PostsIdEditRoute
@@ -203,45 +184,37 @@ const PostsIdRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
+  '': typeof PostLayoutRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof AuthProfileRoute
   '/posts/$id': typeof PostsIdRouteWithChildren
-  '/products/$slug': typeof ProductsSlugRoute
-  '/posts': typeof PostsIndexRoute
-  '/products': typeof ProductsIndexRoute
-  '/products/create': typeof AuthProductsCreateRoute
+  '/posts/create': typeof AuthPostsCreateRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
-  '/products/$slug/edit': typeof AuthProductsSlugEditRoute
+  '/posts': typeof PostLayoutPostsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
+  '': typeof PostLayoutRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof AuthProfileRoute
   '/posts/$id': typeof PostsIdRouteWithChildren
-  '/products/$slug': typeof ProductsSlugRoute
-  '/posts': typeof PostsIndexRoute
-  '/products': typeof ProductsIndexRoute
-  '/products/create': typeof AuthProductsCreateRoute
+  '/posts/create': typeof AuthPostsCreateRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
-  '/products/$slug/edit': typeof AuthProductsSlugEditRoute
+  '/posts': typeof PostLayoutPostsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/_postLayout': typeof PostLayoutRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/posts/$id': typeof PostsIdRouteWithChildren
-  '/products/$slug': typeof ProductsSlugRoute
-  '/posts/': typeof PostsIndexRoute
-  '/products/': typeof ProductsIndexRoute
-  '/_auth/products/create': typeof AuthProductsCreateRoute
+  '/_auth/posts/create': typeof AuthPostsCreateRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
-  '/_auth/products/$slug/edit': typeof AuthProductsSlugEditRoute
+  '/_postLayout/posts/': typeof PostLayoutPostsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -252,12 +225,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/posts/$id'
-    | '/products/$slug'
-    | '/posts'
-    | '/products'
-    | '/products/create'
+    | '/posts/create'
     | '/posts/$id/edit'
-    | '/products/$slug/edit'
+    | '/posts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -265,46 +235,37 @@ export interface FileRouteTypes {
     | '/login'
     | '/profile'
     | '/posts/$id'
-    | '/products/$slug'
-    | '/posts'
-    | '/products'
-    | '/products/create'
+    | '/posts/create'
     | '/posts/$id/edit'
-    | '/products/$slug/edit'
+    | '/posts'
   id:
     | '__root__'
     | '/'
     | '/_auth'
+    | '/_postLayout'
     | '/(auth)/login'
     | '/_auth/profile'
     | '/posts/$id'
-    | '/products/$slug'
-    | '/posts/'
-    | '/products/'
-    | '/_auth/products/create'
+    | '/_auth/posts/create'
     | '/posts/$id/edit'
-    | '/_auth/products/$slug/edit'
+    | '/_postLayout/posts/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  PostLayoutRoute: typeof PostLayoutRouteWithChildren
   authLoginRoute: typeof authLoginRoute
   PostsIdRoute: typeof PostsIdRouteWithChildren
-  ProductsSlugRoute: typeof ProductsSlugRoute
-  PostsIndexRoute: typeof PostsIndexRoute
-  ProductsIndexRoute: typeof ProductsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  PostLayoutRoute: PostLayoutRouteWithChildren,
   authLoginRoute: authLoginRoute,
   PostsIdRoute: PostsIdRouteWithChildren,
-  ProductsSlugRoute: ProductsSlugRoute,
-  PostsIndexRoute: PostsIndexRoute,
-  ProductsIndexRoute: ProductsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -319,11 +280,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_auth",
+        "/_postLayout",
         "/(auth)/login",
-        "/posts/$id",
-        "/products/$slug",
-        "/posts/",
-        "/products/"
+        "/posts/$id"
       ]
     },
     "/": {
@@ -333,8 +292,13 @@ export const routeTree = rootRoute
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/profile",
-        "/_auth/products/create",
-        "/_auth/products/$slug/edit"
+        "/_auth/posts/create"
+      ]
+    },
+    "/_postLayout": {
+      "filePath": "_postLayout.tsx",
+      "children": [
+        "/_postLayout/posts/"
       ]
     },
     "/(auth)/login": {
@@ -350,26 +314,17 @@ export const routeTree = rootRoute
         "/posts/$id/edit"
       ]
     },
-    "/products/$slug": {
-      "filePath": "products.$slug.tsx"
-    },
-    "/posts/": {
-      "filePath": "posts.index.tsx"
-    },
-    "/products/": {
-      "filePath": "products.index.tsx"
-    },
-    "/_auth/products/create": {
-      "filePath": "_auth.products.create.tsx",
+    "/_auth/posts/create": {
+      "filePath": "_auth.posts.create.tsx",
       "parent": "/_auth"
     },
     "/posts/$id/edit": {
       "filePath": "posts.$id.edit.tsx",
       "parent": "/posts/$id"
     },
-    "/_auth/products/$slug/edit": {
-      "filePath": "_auth.products.$slug.edit.tsx",
-      "parent": "/_auth"
+    "/_postLayout/posts/": {
+      "filePath": "_postLayout.posts.index.tsx",
+      "parent": "/_postLayout"
     }
   }
 }
