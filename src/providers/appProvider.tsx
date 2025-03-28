@@ -1,5 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react"
 import { QueryClient } from "@tanstack/react-query"
+import { Toaster } from "@/components/ui/sonner"
 import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react"
 
@@ -22,7 +23,8 @@ export default function AppProvider() {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
         useAuth0()
 
-    const [roles, setRoles] = useState<UserRole[]>(["guest"])
+    const defaultGuestRole = "guest"
+    const [roles, setRoles] = useState<UserRole[]>([defaultGuestRole])
 
     useEffect(() => {
         async function getUserRoles() {
@@ -32,7 +34,9 @@ export default function AppProvider() {
                     const decodedToken: any = jwtDecode(token)
 
                     const namespace = "https://shopey.com/roles"
-                    const rolesFromToken = decodedToken[namespace] || []
+                    const rolesFromToken = decodedToken[namespace] || [
+                        defaultGuestRole,
+                    ]
 
                     setRoles(rolesFromToken)
                 } catch (error) {
@@ -59,6 +63,7 @@ export default function AppProvider() {
                     user={user}
                     queryClient={queryClient}
                 />
+                <Toaster />
             </QueryClientProvider>
         </AbilityProvider>
     )

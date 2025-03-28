@@ -1,14 +1,10 @@
 import publicAxios from "@/api/axios/publicAxios"
-import type {
-    GetPostsParams,
-    Post,
-    CreatePostPayload,
-} from "@/types/post"
+import type { GetPostsParams, Post } from "@/types/post"
 import { createQueryString } from "@/lib/utils/queryParams"
 
 const TABLE_POSTS = "posts"
 
-const POSTS_API = {
+export const POSTS_API = {
     GET_POSTS: `/${TABLE_POSTS}`,
     CREATE_POST: `/${TABLE_POSTS}`,
 }
@@ -34,6 +30,3 @@ export async function getPosts(params?: GetPostsParams): Promise<Post[]> {
     return posts
 }
 
-export function createPost(data: CreatePostPayload): Promise<void> {
-    return publicAxios.post(POSTS_API.CREATE_POST, data)
-}
