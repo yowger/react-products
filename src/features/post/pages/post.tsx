@@ -1,12 +1,16 @@
-import { Link, useParams } from "@tanstack/react-router"
+import { subject } from "@casl/ability"
+import { Link, useParams, useRouteContext } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Pencil, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
-import { Can } from "@/lib/abilities/abilityContext"
 
 export default function Post() {
+    const { ability, user } = useRouteContext({
+        from: "__root__",
+    })
+
     const postId = useParams({
         from: "/posts/$id",
         select: (params) => params.id,
@@ -23,19 +27,23 @@ export default function Post() {
                         </h1>
 
                         <div className="flex gap-2">
-                            <Can I="update" a="Post" this={postData}>
-                                {() => (
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="cursor-pointer"
-                                    >
-                                        <Trash />
-                                    </Button>
-                                )}
-                            </Can>
+                            {ability.can(
+                                "delete",
+                                subject("Post", postData)
+                            ) && (
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="cursor-pointer"
+                                >
+                                    <Trash />
+                                </Button>
+                            )}
 
-                            <Can I="delete" a="Post" this={postData}>
+                            {ability.can(
+                                "update",
+                                subject("Post", postData)
+                            ) && (
                                 <Button
                                     variant="outline"
                                     size="icon"
@@ -49,13 +57,19 @@ export default function Post() {
                                         <Pencil />
                                     </Link>
                                 </Button>
-                            </Can>
+                            )}
                         </div>
                     </div>
 
                     <div className="flex gap-5 items-center">
                         <span className="text-sm text-gray-800">
-                            by: auth0 name here
+                            {user.sub === postData.author_id ? (
+                                <span className="text-sm text-gray-800">
+                                    You
+                                </span>
+                            ) : (
+                                <span> by: placeholder</span>
+                            )}
                         </span>
 
                         <span className="flex text-sm text-gray-800">
@@ -65,9 +79,7 @@ export default function Post() {
                     </div>
                 </div>
 
-                <p className="text-lg text-gray-800">
-                    {postData.content}
-                </p>
+                <p className="text-lg text-gray-800">{postData.content}</p>
             </div>
         </div>
     )

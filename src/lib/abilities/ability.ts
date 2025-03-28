@@ -13,25 +13,24 @@ export default function defineAbilitiesFor(
     user: User | undefined,
     roles: UserRole[]
 ) {
-    const normalizedRoles = roles.map((role) => role.toLowerCase())
-
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
         createMongoAbility
     )
 
-    if (normalizedRoles.includes("admin")) {
-        can("manage", "all")
-        cannot("delete", "Post")
-        cannot("delete", "Comment")
-    } else if (normalizedRoles.includes("User")) {
-        can("read", "Post")
-        can("create", "Post")
-        can("update", "Post", { author_id: user?.sub })
-        can("delete", "Post", { author_id: user?.sub })
+    if (user) {
+        const normalizedRoles = roles.map((role) => role.toLowerCase())
 
-        can("read", "Comment")
-        can("create", "Comment")
-        can("delete", "Comment", { author_id: user?.sub })
+        if (normalizedRoles.includes("admin")) {
+            can("manage", "all")
+            cannot("delete", "Post")
+            cannot("delete", "Comment")
+        } else if (normalizedRoles.includes("user")) {
+            can(["read", "create"], "Post")
+            can(["update", "delete"], "Post", { author_id: user.sub })
+
+            can(["read", "create"], "Comment")
+            can("delete", "Comment", { author_id: user?.sub })
+        }
     } else {
         can("read", "Post")
         can("read", "Comment")
