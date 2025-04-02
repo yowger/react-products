@@ -20,7 +20,7 @@ export default function Posts() {
     }
 
     return (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-4 md:gap-6 lg:gap-12">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-4 md:gap-6 lg:gap-8">
             {postsData.map((post) => (
                 <PostCard key={post.id} post={post} currentUser={user} />
             ))}
@@ -31,11 +31,12 @@ export default function Posts() {
 function PostCard(props: PostCardProps) {
     const { post, currentUser } = props
     const isCurrentUser = currentUser?.sub === post.authorId.auth0Id
+    const fallbackName = post.authorId.name.charAt(0).toUpperCase()
 
     return (
         <li>
             <Link to="/posts/$id" params={{ id: post.id }}>
-                <div className="flex flex-col gap-y-4 bg-white rounded-xs p-4 shadow-sm h-full">
+                <div className="flex flex-col gap-y-4 bg-[#F5F5F5] rounded-xs p-6 shadow-sm h-full">
                     <h3 className="text-lg font-bold">{post.title}</h3>
                     <p className="line-clamp-4 text-gray-700">{post.content}</p>
 
@@ -47,7 +48,7 @@ function PostCard(props: PostCardProps) {
                                 src={post.authorId.avatarUrl}
                                 alt={post.authorId.name}
                             />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarFallback>{fallbackName}</AvatarFallback>
                         </Avatar>
 
                         <div className="flex flex-col space-y-0.5">
