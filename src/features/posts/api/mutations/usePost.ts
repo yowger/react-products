@@ -11,10 +11,11 @@ export function usePost() {
 
     return useMutation({
         mutationFn: async (data: CreatePostPayload) => {
-            const response = await privateAxios.post(
-                POSTS_API.CREATE_POST,
-                data
-            )
+            const response = await privateAxios.post(POSTS_API.CREATE_POST, {
+                title: data.title,
+                content: data.content,
+                author_id: data.authorId,
+            })
 
             return response.data
         },

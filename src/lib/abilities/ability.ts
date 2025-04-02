@@ -29,7 +29,7 @@ export default function defineAbilitiesFor(
             can(["update", "delete"], "Post", { author_id: user.sub })
 
             can(["read", "create"], "Comment")
-            can("delete", "Comment", { author_id: user?.sub })
+            can("delete", "Comment", { author_id: user.sub })
         }
     } else {
         can("read", "Post")

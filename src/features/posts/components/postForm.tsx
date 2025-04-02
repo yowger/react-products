@@ -43,7 +43,7 @@ export default function PostForm() {
             mutate(
                 {
                     ...data,
-                    author_id: user.sub,
+                    authorId: user.sub,
                 },
                 {
                     onSuccess: () => {

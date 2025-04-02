@@ -1,9 +1,11 @@
+import { User } from "@/types/users"
+
 export interface Post {
     id: string
     title: string
     content: string
-    author_id: string
-    created_at: string
+    authorId: User
+    createdAt: string
 }
 
 export interface GetPostsParams {
@@ -17,7 +19,7 @@ export interface GetPostsParams {
 export interface CreatePostPayload {
     title: string
     content: string
-    author_id: string
+    authorId: string
 }
 
 export interface UpdatePostPayload {

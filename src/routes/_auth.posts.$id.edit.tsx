@@ -3,7 +3,7 @@ import { subject } from "@casl/ability"
 
 import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
 
-export const Route = createFileRoute("/posts/$id/edit")({
+export const Route = createFileRoute("/_auth/posts/$id/edit")({
     loader: async ({ context: { ability, queryClient }, params: { id } }) => {
         const postData = await queryClient.ensureQueryData(postQueryOptions(id))
 

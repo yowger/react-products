@@ -18,8 +18,8 @@ import { Route as PostsIdImport } from './routes/posts.$id'
 import { Route as AuthProfileImport } from './routes/_auth.profile'
 import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as PostLayoutPostsIndexImport } from './routes/_postLayout.posts.index'
-import { Route as PostsIdEditImport } from './routes/posts.$id.edit'
 import { Route as AuthPostsCreateImport } from './routes/_auth.posts.create'
+import { Route as AuthPostsIdEditImport } from './routes/_auth.posts.$id.edit'
 
 // Create/Update Routes
 
@@ -63,15 +63,15 @@ const PostLayoutPostsIndexRoute = PostLayoutPostsIndexImport.update({
   getParentRoute: () => PostLayoutRoute,
 } as any)
 
-const PostsIdEditRoute = PostsIdEditImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => PostsIdRoute,
-} as any)
-
 const AuthPostsCreateRoute = AuthPostsCreateImport.update({
   id: '/posts/create',
   path: '/posts/create',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthPostsIdEditRoute = AuthPostsIdEditImport.update({
+  id: '/posts/$id/edit',
+  path: '/posts/$id/edit',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -128,19 +128,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthPostsCreateImport
       parentRoute: typeof AuthImport
     }
-    '/posts/$id/edit': {
-      id: '/posts/$id/edit'
-      path: '/edit'
-      fullPath: '/posts/$id/edit'
-      preLoaderRoute: typeof PostsIdEditImport
-      parentRoute: typeof PostsIdImport
-    }
     '/_postLayout/posts/': {
       id: '/_postLayout/posts/'
       path: '/posts'
       fullPath: '/posts'
       preLoaderRoute: typeof PostLayoutPostsIndexImport
       parentRoute: typeof PostLayoutImport
+    }
+    '/_auth/posts/$id/edit': {
+      id: '/_auth/posts/$id/edit'
+      path: '/posts/$id/edit'
+      fullPath: '/posts/$id/edit'
+      preLoaderRoute: typeof AuthPostsIdEditImport
+      parentRoute: typeof AuthImport
     }
   }
 }
@@ -150,11 +150,13 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthProfileRoute: typeof AuthProfileRoute
   AuthPostsCreateRoute: typeof AuthPostsCreateRoute
+  AuthPostsIdEditRoute: typeof AuthPostsIdEditRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
   AuthPostsCreateRoute: AuthPostsCreateRoute,
+  AuthPostsIdEditRoute: AuthPostsIdEditRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -171,26 +173,15 @@ const PostLayoutRouteWithChildren = PostLayoutRoute._addFileChildren(
   PostLayoutRouteChildren,
 )
 
-interface PostsIdRouteChildren {
-  PostsIdEditRoute: typeof PostsIdEditRoute
-}
-
-const PostsIdRouteChildren: PostsIdRouteChildren = {
-  PostsIdEditRoute: PostsIdEditRoute,
-}
-
-const PostsIdRouteWithChildren =
-  PostsIdRoute._addFileChildren(PostsIdRouteChildren)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof PostLayoutRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof AuthProfileRoute
-  '/posts/$id': typeof PostsIdRouteWithChildren
+  '/posts/$id': typeof PostsIdRoute
   '/posts/create': typeof AuthPostsCreateRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/posts': typeof PostLayoutPostsIndexRoute
+  '/posts/$id/edit': typeof AuthPostsIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -198,10 +189,10 @@ export interface FileRoutesByTo {
   '': typeof PostLayoutRouteWithChildren
   '/login': typeof authLoginRoute
   '/profile': typeof AuthProfileRoute
-  '/posts/$id': typeof PostsIdRouteWithChildren
+  '/posts/$id': typeof PostsIdRoute
   '/posts/create': typeof AuthPostsCreateRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/posts': typeof PostLayoutPostsIndexRoute
+  '/posts/$id/edit': typeof AuthPostsIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -211,10 +202,10 @@ export interface FileRoutesById {
   '/_postLayout': typeof PostLayoutRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/_auth/profile': typeof AuthProfileRoute
-  '/posts/$id': typeof PostsIdRouteWithChildren
+  '/posts/$id': typeof PostsIdRoute
   '/_auth/posts/create': typeof AuthPostsCreateRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/_postLayout/posts/': typeof PostLayoutPostsIndexRoute
+  '/_auth/posts/$id/edit': typeof AuthPostsIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -226,8 +217,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/posts/$id'
     | '/posts/create'
-    | '/posts/$id/edit'
     | '/posts'
+    | '/posts/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -236,8 +227,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/posts/$id'
     | '/posts/create'
-    | '/posts/$id/edit'
     | '/posts'
+    | '/posts/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -247,8 +238,8 @@ export interface FileRouteTypes {
     | '/_auth/profile'
     | '/posts/$id'
     | '/_auth/posts/create'
-    | '/posts/$id/edit'
     | '/_postLayout/posts/'
+    | '/_auth/posts/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -257,7 +248,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PostLayoutRoute: typeof PostLayoutRouteWithChildren
   authLoginRoute: typeof authLoginRoute
-  PostsIdRoute: typeof PostsIdRouteWithChildren
+  PostsIdRoute: typeof PostsIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -265,7 +256,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PostLayoutRoute: PostLayoutRouteWithChildren,
   authLoginRoute: authLoginRoute,
-  PostsIdRoute: PostsIdRouteWithChildren,
+  PostsIdRoute: PostsIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -292,7 +283,8 @@ export const routeTree = rootRoute
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/profile",
-        "/_auth/posts/create"
+        "/_auth/posts/create",
+        "/_auth/posts/$id/edit"
       ]
     },
     "/_postLayout": {
@@ -309,22 +301,19 @@ export const routeTree = rootRoute
       "parent": "/_auth"
     },
     "/posts/$id": {
-      "filePath": "posts.$id.tsx",
-      "children": [
-        "/posts/$id/edit"
-      ]
+      "filePath": "posts.$id.tsx"
     },
     "/_auth/posts/create": {
       "filePath": "_auth.posts.create.tsx",
       "parent": "/_auth"
     },
-    "/posts/$id/edit": {
-      "filePath": "posts.$id.edit.tsx",
-      "parent": "/posts/$id"
-    },
     "/_postLayout/posts/": {
       "filePath": "_postLayout.posts.index.tsx",
       "parent": "/_postLayout"
+    },
+    "/_auth/posts/$id/edit": {
+      "filePath": "_auth.posts.$id.edit.tsx",
+      "parent": "/_auth"
     }
   }
 }
