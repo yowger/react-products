@@ -26,10 +26,10 @@ export default function defineAbilitiesFor(
             cannot("delete", "Comment")
         } else if (normalizedRoles.includes("user")) {
             can(["read", "create"], "Post")
-            can(["update", "delete"], "Post", { author_id: user.sub })
+            can(["update", "delete"], "Post", { "authorId.auth0Id": user.sub })
 
             can(["read", "create"], "Comment")
-            can("delete", "Comment", { author_id: user.sub })
+            can("delete", "Comment", { "authorId.auth0Id": user.sub })
         }
     } else {
         can("read", "Post")
