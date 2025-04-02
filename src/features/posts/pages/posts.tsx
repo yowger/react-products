@@ -37,8 +37,12 @@ function PostCard(props: PostCardProps) {
         <li>
             <Link to="/posts/$id" params={{ id: post.id }}>
                 <div className="flex flex-col gap-y-4 bg-[#F5F5F5] rounded-xs p-6 shadow-sm h-full">
-                    <h3 className="text-lg font-bold">{post.title}</h3>
-                    <p className="line-clamp-4 text-gray-700">{post.content}</p>
+                    <h3 className="text-2xl font-semibold tracking-tight line-clamp-2">
+                        {post.title}
+                    </h3>
+                    <p className="line-clamp-4 text-gray-700 leading-7">
+                        {post.content}
+                    </p>
 
                     <div className="flex-1" />
 
