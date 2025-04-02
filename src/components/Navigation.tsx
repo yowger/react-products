@@ -26,15 +26,15 @@ export default function Navigation() {
     const logout = useLogout()
 
     return (
-        <header className="border-b">
-            <nav className="px-4 flex items-center justify-between flex-wrap bg-neutral-50">
+        <header className="border-b bg-neutral-50">
+            <nav className="px-4 py-2 flex items-center justify-between flex-wrap mx-auto max-w-7xl">
                 <Logo width={60} height={34} />
                 <ul className="flex p-4 font-medium">
                     <li>
                         <Link
                             to="/"
                             activeProps={{ className: "font-semibold" }}
-                            className="block py-2 px-3 text-lg"
+                            className="block py-2 px-6 text-lg"
                         >
                             Home
                         </Link>
@@ -43,7 +43,7 @@ export default function Navigation() {
                         <Link
                             to="/posts"
                             activeProps={{ className: "font-semibold" }}
-                            className="block py-2 px-3 text-lg"
+                            className="block py-2 px-6 text-lg"
                         >
                             Posts
                         </Link>
