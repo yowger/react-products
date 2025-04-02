@@ -19,33 +19,38 @@ export const queryClient = new QueryClient({
     },
 })
 
+const defaultGuestRole = "guest"
+
 export default function AppProvider() {
-    const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    const { user, isAuthenticated, isLoading, getAccessTokenSilently, logout } =
         useAuth0()
 
-    const defaultGuestRole = "guest"
     const [roles, setRoles] = useState<UserRole[]>([defaultGuestRole])
 
     useEffect(() => {
-        async function getUserRoles() {
-            if (isAuthenticated) {
-                try {
-                    const token = await getAccessTokenSilently()
-                    const decodedToken: any = jwtDecode(token)
-
-                    const namespace = "https://shopey.com/roles"
-                    const rolesFromToken = decodedToken[namespace] || [
-                        defaultGuestRole,
-                    ]
-
-                    setRoles(rolesFromToken)
-                } catch (error) {
-                    console.error("Error fetching roles:", error)
-                }
+        async function decodeToken() {
+            try {
+                const token = await getAccessTokenSilently()
+                return jwtDecode(token)
+            } catch (error) {
+                logout()
             }
         }
 
-        getUserRoles()
+        function getUserRoleFromToken(token: any) {
+            const namespace = "https://shopey.com/roles"
+            const rolesFromToken = token[namespace] || [defaultGuestRole]
+
+            setRoles(rolesFromToken)
+        }
+
+        if (isAuthenticated) {
+            decodeToken().then((token) => {
+                if (token) {
+                    getUserRoleFromToken(token)
+                }
+            })
+        }
     }, [isAuthenticated, getAccessTokenSilently])
 
     const ability = defineAbilitiesFor(user, roles)

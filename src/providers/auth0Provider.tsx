@@ -13,6 +13,7 @@ export default function Auth0Provider(props: Auth0ProviderProps) {
             authorizationParams={{
                 redirect_uri: window.location.origin,
                 audience: config.auth.VITE_AUTH_AUDIENCE,
+                scope: "openid profile email offline_access",
             }}
             /* 
             since I'm using a simple api from supabse, there are limitations such as storing cookies.
