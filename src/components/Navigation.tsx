@@ -16,6 +16,7 @@ import { useLogout } from "@/hooks/useLogout"
 
 export default function Navigation() {
     const { user, isAuthenticated } = useAuth0()
+
     const login = useLogin()
     const logout = useLogout()
 
@@ -23,7 +24,7 @@ export default function Navigation() {
         <header>
             <nav className="px-4 flex items-center justify-between flex-wrap">
                 <div>
-                    <span className="font-bold">LOGO</span>
+                    <span className="font-bold">POST</span>
                 </div>
 
                 <ul className="flex p-4 font-medium">
@@ -42,8 +43,8 @@ export default function Navigation() {
                 {isAuthenticated ? (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
-                                {user?.given_name} <User />
+                            <Button variant="ghost" className="shadow-none">
+                                <User /> {user?.nickname}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
