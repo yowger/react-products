@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react"
 import { subject } from "@casl/ability"
 import { Link, useParams, useRouteContext } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
@@ -7,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { postQueryOptions } from "@/features/post/api/queries/postQueryOptions"
 
 export default function Post() {
-    const { ability, user } = useRouteContext({
+    const { user } = useAuth0()
+    const { ability } = useRouteContext({
         from: "__root__",
     })
 
@@ -63,7 +65,7 @@ export default function Post() {
 
                     <div className="flex gap-5 items-center">
                         <span className="text-sm text-gray-800">
-                            {user.sub === postData.author_id ? (
+                            {user?.sub === postData.authorId.auth0Id ? (
                                 <span className="text-sm text-gray-800">
                                     You
                                 </span>
@@ -74,7 +76,9 @@ export default function Post() {
 
                         <span className="flex text-sm text-gray-800">
                             created at:{" "}
-                            {new Date(postData.created_at).toLocaleDateString()}
+                            {new Date(
+                                postData.authorId.createdAt
+                            ).toLocaleDateString()}
                         </span>
                     </div>
                 </div>

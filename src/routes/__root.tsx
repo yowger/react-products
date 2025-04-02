@@ -20,7 +20,7 @@ import { type AppAbility } from "@/lib/abilities/ability"
 
 export const Route = createRootRouteWithContext<{
     ability: AppAbility
-    user: User
+    user: User | undefined
     isAuthenticated: boolean
     queryClient: QueryClient
 }>()({

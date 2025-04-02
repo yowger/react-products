@@ -1,12 +1,14 @@
 import { notFound } from "@tanstack/react-router"
 
 import publicAxios from "@/api/axios/publicAxios"
+import { camelizeKeys } from "@/lib/utils/camelizeKeys"
 import type { Post, UpdatePostPayload } from "@/types/post"
 
 const TABLE_POSTS = "posts"
 
 const POSTS_API = {
-    GET_POST: (id: string) => `/${TABLE_POSTS}?id=eq.${id}`,
+    GET_POST: (id: string) =>
+        `/${TABLE_POSTS}?id=eq.${id}&select=*,author_id(*)`,
     UPDATE_POST: (id: string) => `/${TABLE_POSTS}?id=eq.${id}`,
     DELETE_POST: (id: string) => `/${TABLE_POSTS}?id=eq.${id}`,
 }
@@ -19,7 +21,7 @@ export async function getPost(id: string): Promise<Post> {
                 throw notFound()
             }
 
-            return res.data[0]
+            return camelizeKeys(res.data[0])
         })
         .catch((err) => {
             if (err.response?.status === 404) {
