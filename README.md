@@ -24,7 +24,21 @@ The **schema and API boundaries** might change in the future.
 
 ## 🗂️ **Database Schema**
 
+### 👤 Users Table
+
 ### 📚 **Posts Table**
+
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  auth0_id TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  username TEXT UNIQUE NOT NULL,
+  avatar_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+```
 
 ```sql
 CREATE TABLE posts (
@@ -51,6 +65,23 @@ CREATE TABLE comments (
 ---
 
 ## 🔐 **Security Policies (RLS)**
+
+### 📌 **RLS on `users` Table**
+
+```sql
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Allow users to manage their own profiles
+CREATE POLICY "Users can insert on users"
+ON users
+FOR INSERT
+WITH CHECK (true);
+
+CREATE POLICY "Users can read users"
+ON users
+FOR SELECT
+USING (true);
+```
 
 ### 📌 **RLS on `posts` Table**
 
@@ -196,14 +227,58 @@ if (event.authorization) {
 }
 ```
 
+**Sync user to Supabase**
+
+```javascript
+exports.onExecutePostLogin = async (event, api) => {
+    const axios = require("axios")
+
+    const SUPABASE_URL = event.secrets.SUPABASE_URL
+    const SUPABASE_API_KEY = event.secrets.SUPABASE_API_KEY
+
+    const user = {
+        auth0_id: event.user.user_id,
+        email: event.user.email,
+        name: event.user.name,
+        username: event.user.username,
+        avatar_url: event.user.picture,
+    }
+
+    try {
+        // check if user already exists
+        const { data } = await axios.get(
+            `${SUPABASE_URL}/users?auth0_id=eq.${user.auth0_id}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    apiKey: SUPABASE_API_KEY,
+                },
+            }
+        )
+
+        if (data.length === 0) {
+            await axios.post(`${SUPABASE_URL}/users`, user, {
+                headers: {
+                    apiKey: SUPABASE_API_KEY,
+                    "Content-Type": "application/json",
+                },
+            })
+        }
+    } catch (error) {
+        console.log("Error registering user to supabase: ", error)
+    }
+}
+```
+
 ### ⚡️ **Post-Login Action Flow**
 
 Set up the flow as follows:
 
 1. **Start**
-2. **Assign Default Role**
-3. **Assign Roles to Token**
-4. **Complete Token Issued**
+2. **Sync user to Supabase**
+3. **Assign Default Role**
+4. **Assign Roles to Token**
+5. **Complete Token Issued**
 
 ---
 
@@ -216,19 +291,10 @@ This project demonstrates RBAC with Auth0 and CASL, but due to the simplicity of
     - The app uses `localStorage` to persist the Auth0 session, which is less secure than storing tokens in HTTP-only, secure cookies.
     - In real-world app, refresh tokens should be stored and managed securely via a backend.
 
-2. **No Backend API for User Data:**
+- ***
 
-    - Since Supabase is used as the API, it does not have direct integration with Auth0 to fetch user profiles.
-    - To display user names in posts and comments, the username and avatar are stored in the `posts` and `comments` tables. Consider creating another table for user and using auth0 webhooks to sync data.
-
-3. **No Real-Time Sync Between Auth0 and Supabase:**
-    - For real-time sync between Auth0 and Supabase, a webhook or backend listener would be required to update Supabase when Auth0 profile/role changes.
-
----
-
-**Workaround Suggestion:**
+    **Workaround Suggestion:**
 
 - For a production-grade app, introduce a backend that:
     - Stores and refreshes Auth0 tokens securely.
     - Listens to Auth0 events via webhooks to sync user updates with Supabase.
-    - Provides an API endpoint to fetch user information securely.
