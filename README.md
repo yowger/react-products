@@ -165,22 +165,32 @@ Ensure that your **Auth0 `audience_url`** is correctly connected to your Supabas
 
 ```jsx
 // abilities.ts
-if (normalizedRoles.includes("admin")) {
-    can("manage", "all")
-    cannot("delete", "Post")
-    cannot("delete", "Comment")
-} else if (normalizedRoles.includes("User")) {
-    can("read", "Post")
-    can("create", "Post")
-    can("update", "Post", { author_id: user?.sub })
-    can("delete", "Post", { author_id: user?.sub })
+if (!user) {
+    can("read", ["Post", "Comment"])
 
-    can("read", "Comment")
-    can("create", "Comment")
-    can("delete", "Comment", { author_id: user?.sub })
-} else {
-    can("read", "Post")
-    can("read", "Comment")
+    return build()
+}
+
+const normalizedRoles = roles.map((role) => role.toLowerCase())
+const isAdmin = normalizedRoles.includes("admin")
+const isUser = normalizedRoles.includes("user")
+
+if (isAdmin) {
+    can("manage", "all")
+    cannot("delete", "Post", {
+        "authorId.auth0Id": { $ne: user.sub },
+    })
+    cannot("delete", "Comment", {
+        "authorId.auth0Id": { $ne: user.sub },
+    })
+}
+
+if (isUser) {
+    can(["read", "create"], "Post")
+    can(["update", "delete"], "Post", { "authorId.auth0Id": user.sub })
+
+    can(["read", "create"], "Comment")
+    can("delete", "Comment", { "authorId.auth0Id": user.sub })
 }
 ```
 
