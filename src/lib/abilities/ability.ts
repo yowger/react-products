@@ -6,7 +6,6 @@ import { type Post } from "@/types/post"
 export type Actions = "manage" | "read" | "create" | "update" | "delete"
 export type Subjects = Post | "Post" | "Comment" | "all"
 export type AppAbility = MongoAbility<[Actions, Subjects]>
-
 export type UserRole = "admin" | "user" | "guest"
 
 export default function defineAbilitiesFor(
@@ -17,23 +16,32 @@ export default function defineAbilitiesFor(
         createMongoAbility
     )
 
-    if (user) {
-        const normalizedRoles = roles.map((role) => role.toLowerCase())
+    if (!user) {
+        can("read", ["Post", "Comment"])
 
-        if (normalizedRoles.includes("admin")) {
-            can("manage", "all")
-            cannot("delete", "Post")
-            cannot("delete", "Comment")
-        } else if (normalizedRoles.includes("user")) {
-            can(["read", "create"], "Post")
-            can(["update", "delete"], "Post", { "authorId.auth0Id": user.sub })
+        return build()
+    }
 
-            can(["read", "create"], "Comment")
-            can("delete", "Comment", { "authorId.auth0Id": user.sub })
-        }
-    } else {
-        can("read", "Post")
-        can("read", "Comment")
+    const normalizedRoles = roles.map((role) => role.toLowerCase())
+    const isAdmin = normalizedRoles.includes("admin")
+    const isUser = normalizedRoles.includes("user")
+
+    if (isAdmin) {
+        can("manage", "all")
+        cannot("delete", "Post", {
+            "authorId.auth0Id": { $ne: user.sub },
+        })
+        cannot("delete", "Comment", {
+            "authorId.auth0Id": { $ne: user.sub },
+        })
+    }
+
+    if (isUser) {
+        can(["read", "create"], "Post")
+        can(["update", "delete"], "Post", { "authorId.auth0Id": user.sub })
+
+        can(["read", "create"], "Comment")
+        can("delete", "Comment", { "authorId.auth0Id": user.sub })
     }
 
     return build()
