@@ -10,7 +10,7 @@ export const POSTS_API = {
     CREATE_POST: `/${TABLE_POSTS}`,
 }
 
-export async function getPosts(params?: GetPostsParams): Promise<Post[]> {
+export async function getPosts(_params?: GetPostsParams): Promise<Post[]> {
     // const queryString = createQueryString({
     //     limit: params?.limit,
     //     offset: params?.offset,
