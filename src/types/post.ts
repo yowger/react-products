@@ -5,7 +5,8 @@ export interface Post {
     title: string
     content: string
     authorId: User
-    createdAt: string
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface GetPostsParams {

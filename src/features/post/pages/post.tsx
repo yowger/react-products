@@ -18,6 +18,7 @@ export default function Post() {
         select: (params) => params.id,
     })
     const { data: postData } = useSuspenseQuery(postQueryOptions(postId))
+    console.log("🚀 ~ Post ~ postData:", postData)
 
     return (
         <div className="flex justify-center items-center">

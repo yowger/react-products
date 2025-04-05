@@ -28,17 +28,22 @@ export default function defineAbilitiesFor(
 
     if (isAdmin) {
         can("manage", "all")
-        cannot("delete", "Post", {
+        cannot("update", "Post", {
             "authorId.auth0Id": { $ne: user.sub },
         })
-        cannot("delete", "Comment", {
+        cannot("update", "Comment", {
             "authorId.auth0Id": { $ne: user.sub },
         })
     }
 
     if (isUser) {
         can(["read", "create"], "Post")
-        can(["update", "delete"], "Post", { "authorId.auth0Id": user.sub })
+        can("delete", "Post", {
+            "authorId.auth0Id": user.sub,
+        })
+        can("update", "Post", {
+            "authorId.auth0Id": user.sub,
+        })
 
         can(["read", "create"], "Comment")
         can("delete", "Comment", { "authorId.auth0Id": user.sub })
