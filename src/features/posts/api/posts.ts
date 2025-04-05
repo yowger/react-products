@@ -31,3 +31,4 @@ export async function getPosts(params?: GetPostsParams): Promise<Post[]> {
 
     return posts
 }
+
